@@ -22,9 +22,13 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    '''
-    The following are hidden fields which we will manually assign after the participant confirms the slider input.
-    '''
+
+    #demogragphics
+    age=models.IntegerField()
+    gender=models.StringField(choices=['Male','Female','Other'],optional=True)
+
+    'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
+    #choices
     choice_NV_task=models.StringField()
     choice_Maze_task=models.StringField()
     choice_Count_letters_task=models.StringField()
@@ -38,6 +42,17 @@ class Player(BasePlayer):
     choice_MRT_task=models.StringField()
 
     pass
+
+
+class Introduction(Page):
+    form_model = 'player'
+    form_fields = ['gender', 'age']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number==1
+
+
 
 class Choice1(Page):
     form_model= 'player'
@@ -54,4 +69,11 @@ class Choice2(Page):
     form_model = 'player'
     form_fields = ['choice_Maze_task']
 
-page_sequence = [Choice1, Choice2]
+
+class Results(Page):
+    @staticmethod
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS
+
+
+page_sequence = [Introduction, Choice1, Choice2, Results]
