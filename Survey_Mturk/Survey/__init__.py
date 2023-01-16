@@ -56,7 +56,7 @@ class Introduction(Page):
 
 class Choice1(Page):
     form_model= 'player'
-    form_fields =  ['choice_NV_task']
+    form_fields =  ['choice_NV_task', 'choice_Maze_task']
     
     @staticmethod
     def vars_for_template(player: Player, form_fields=form_fields,Tasks_path=C.Tasks_path):
@@ -67,7 +67,12 @@ class Choice1(Page):
 
 class Choice2(Page):
     form_model = 'player'
-    form_fields = ['choice_Maze_task']
+    form_fields =  ['choice_NV_task', 'choice_Maze_task']
+
+    @staticmethod
+    def vars_for_template(player: Player, form_fields=form_fields,Tasks_path=C.Tasks_path):
+        path_task = Tasks_path + str(form_fields[1]) + '.html'
+        return dict(path_task=path_task)
 
 
 class Results(Page):

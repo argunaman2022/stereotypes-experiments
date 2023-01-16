@@ -1,0 +1,62 @@
+{{ block title }}
+    Choice 2
+{{ endblock }}
+
+{{ block content }}
+
+
+
+<script>
+    function myFunction(){
+        // let description=document.getElementById('description')
+        slider_value_chosen=document.getElementById('slider_choice_django').value //slider value
+
+        document.getElementById('id_choice_Maze_task').value=slider_value_chosen {#3b#}
+
+        if(slider_value_chosen>0){
+        document.getElementById("his_choice").innerHTML = 'I think (or bet?), on average, ' + 'women'.bold() +' correctly answered ' + (slider_value_chosen).toString().bold() + ' more questions than'+' men.'.bold()
+        }
+        else{
+        document.getElementById("his_choice").innerHTML ='I think, on average, ' + 'women'.bold() +' correctly answered ' + (-slider_value_chosen).toString().bold() + ' more questions than'+' men.'.bold()
+        }
+
+
+        document.getElementById("id_players_slider_choice").value=slider_value_chosen
+    }
+
+    function activatediv(){
+        document.getElementById("pls-change").style.display="inline"
+        document.getElementById("next-button").style.display="inline"
+        document.getElementById("ready-button").style.display="none"
+    }
+</script>
+
+
+{{ include path_task}}
+
+<input type="hidden" name="players_slider_choice" id="players_slider_choice" />
+
+
+<button id="ready-button" onclick="activatediv()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
+
+
+<div id="pls-change" class="div-pls-change" style="display:none">
+
+    <label for="slider_choice_django" class="form-label">How many more questions, do you think, men answered compared to women?</label>  {#1#}
+    <input type="range" class="form-range" min="-10" max="10" step="0.1" id="slider_choice_django" oninput="myFunction()"> {#2.#}
+
+        <p id="his_choice"></p>
+
+</div>
+
+
+
+    <div style="display:none">{{formfields}}</div>
+
+    <br>
+    <div id="next-button" class="div-pls-change" style="display:none">
+        {{ next_button }}
+    <div>
+
+{{ endblock }}
+
