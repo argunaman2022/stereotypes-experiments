@@ -1,5 +1,5 @@
 {{ block title }}
-    Task
+    {{task_name}}
 {{ endblock }}
 
 {{ block content }}
@@ -15,7 +15,6 @@
         hischoice=document.getElementById('slider_choice_django').value
 
         {#the 'id_choice_NV_task' is an invisible field, i edit its value to hischoice#}
-        {#document.getElementById('NAMEOFTHEFORMFIELD').value=hischoice#}
         document.getElementById('id_choice_NV_task').value=hischoice
 
         if(hischoice>0){
@@ -37,6 +36,10 @@
 
 
 {{ include path_task}}
+
+{#this is the hidden field where i store the players choice#}
+<input type="hidden" name="players_slider_choice" id="players_slider_choice" />
+
 
 
 {#When player is ready to answer he will press this button#}
