@@ -1,5 +1,5 @@
 {{ block title }}
-    Task
+    task_name
 {{ endblock }}
 
 {{ block content }}
@@ -9,14 +9,39 @@
 <script>
     function myFunction(){
 
-
-
         {# store the chosen value of the slider in var "hischoice"#}
         hischoice=document.getElementById('slider_choice_django').value
 
-        {#the 'id_choice_NV_task' is an invisible field, i edit its value to hischoice#}
-        {#document.getElementById('NAMEOFTHEFORMFIELD').value=hischoice#}
-        document.getElementById('id_choice_NV_task').value=hischoice
+        let round=js_vars.round_number
+        let tasks=js_vars.tasks
+        let current_task=tasks[round-1]
+        console.log(current_task)
+
+        if (current_task=='Ball_bucket_task'){
+                document.getElementById('Ball_bucket_task').value=hischoice
+        } else if (current_task=='Count_letters_task'){
+                document.getElementById('Count_letters_task').value=hischoice
+        } else if (current_task=='Maze_task'){
+                document.getElementById('Maze_task').value=hischoice
+        } else if (current_task=='MRT_task'){
+                document.getElementById('MRT_task').value=hischoice
+        } else if (current_task=='Numbers_in_numbers_task'){
+                document.getElementById('Numbers_in_numbers_task').value=hischoice
+        } else if (current_task=='NV_task'){
+                console.log(hischoice)
+                document.getElementById('id_NV_task').value=hischoice.toString()
+        } else if (current_task=='Word_in_word_task'){
+                document.getElementById('Word_in_word_task').value=hischoice
+        } else if (current_task=='Word_order_task'){
+                document.getElementById('Word_order_task').value=hischoice
+        } else if (current_task=='Word_puzzle_task'){
+                document.getElementById('Word_puzzle_task').value=hischoice
+        }
+
+
+
+
+
 
         if(hischoice>0){
         document.getElementById("hischoice").innerHTML = 'I think (or bet?), on average, ' + 'women'.bold() +' correctly answered ' + (hischoice).toString().bold() + ' more questions than'+' men.'.bold()
@@ -25,7 +50,7 @@
         document.getElementById("hischoice").innerHTML ='I think, on average, ' + 'women'.bold() +' correctly answered ' + (-hischoice).toString().bold() + ' more questions than'+' men.'.bold()
         }
 
-        document.getElementById("id_players_slider_choice").value=hischoice
+        //document.getElementById("id_players_slider_choice").value=hischoice
     }
 
     function myFunctionReady(){
@@ -53,9 +78,8 @@
 
 
 
-    <div style="display:none"></div>
-    {{formfields}}  <br> {#make sure to hide this before deploying the experiment with wrapping in a div with style="display:none"#}
-
+    {{ formfield task_name}}
+    {{ formfield_errors task_name }}
     <div id="next-button" class="div-pls-change" style="display:none">
         {{ next_button }}
     <div>
