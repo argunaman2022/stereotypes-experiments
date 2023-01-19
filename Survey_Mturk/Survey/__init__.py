@@ -12,8 +12,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 2
     Tasks_path= 'Survey/tasks/'
     Instruction_path='_templates/instructions.html'
-    Completion_fee = cu(2)
-
+    #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
 
 class Subsession(BaseSubsession):
     pass
@@ -95,11 +94,9 @@ class Choice(Page):
     def before_next_page(player: Player, timeout_happened):
         task = tasks[player.round_number - 1] # get the current task name
 
-        #print(getattr(player, task), player.NV_task)
         players_answer = getattr(player, task) #player's answer is stored in player.task field
         true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
         earning_from_question = 1 - (true_difference - players_answer)**2 #calculate earnings of participant
-        #print(f"players answer is {players_answer}")
         participant = player.participant #get the participant
         participant.payoff = participant.payoff + earning_from_question #edit the participants earning
         #print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2")
