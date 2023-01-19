@@ -4,7 +4,7 @@
 
 {{ block content }}
 <p>
-    You earned {{player.payoff}}
+    You earned {{participant.payoff_plus_participation_fee()}}, {{participant.payoff}} from questions and the rest from finishing the survey
     Thanks!
 </p>
     {{ next_button }}

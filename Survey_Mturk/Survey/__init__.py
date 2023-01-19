@@ -62,25 +62,6 @@ true_difference_list={
 }
 
 
-def set_payoffs(player: Player):
-    '''
-    1. Payoff of the participant is the completion fee plus their earnings from each of the 9 questions.
-    2. For the 9 questions they are paid based on accuracy using the following formula: 1- (a-b)^2 if a is the true value and b is the given answer.
-    3. WORK ON THE SCORING RULE!!!!! #todo
-    5. Convert the player field answers to decimal #todo
-    '''
-
-    player.payoff = C.Completion_fee
-    for task, true_difference in true_difference_list.items():
-        players_answer= player.f"{task}" #todo fix this problem
-        print(players_answer)
-        print(dir(player))
-
-        player.payoff += 1 - (true_difference - players_answer)**2
-        print(player.payoff, players_answer)
-
-
-
 class Introduction(Page):
     form_model = 'player'
     form_fields = ['gender', 'age']
@@ -112,8 +93,17 @@ class Choice(Page):
         return dict
 
     def before_next_page(player: Player, timeout_happened):
-        if player.round_number == C.NUM_ROUNDS:
-            set_payoffs(Player)
+        task = tasks[player.round_number - 1] # get the current task name
+
+        #print(getattr(player, task), player.NV_task)
+        players_answer = getattr(player, task) #player's answer is stored in player.task field
+        true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
+        earning_from_question = 1 - (true_difference - players_answer)**2 #calculate earnings of participant
+        #print(f"players answer is {players_answer}")
+        participant = player.participant #get the participant
+        participant.payoff = participant.payoff + earning_from_question #edit the participants earning
+        #print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2")
+
 
 
 
