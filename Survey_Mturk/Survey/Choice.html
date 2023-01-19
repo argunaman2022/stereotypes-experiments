@@ -1,5 +1,5 @@
 {{ block title }}
-    task_name
+    Question {{round_number}}
 {{ endblock }}
 
 {{ block content }}
@@ -10,47 +10,42 @@
     function myFunction(){
 
         {# store the chosen value of the slider in var "hischoice"#}
-        hischoice=document.getElementById('slider_choice_django').value
+        hischoice=document.getElementById('slider_choice_django').value {# value chosen by the participant on the slider #}
+        hischoice_percentage= parseFloat(hischoice)*100 {# in percentage points #}
+        hischoice_percentage= Math.round(hischoice_percentage)
 
-        let round=js_vars.round_number
-        let tasks=js_vars.tasks
-        let current_task=tasks[round-1]
+
+        let round=js_vars.round_number {# current round number #}
+        let tasks=js_vars.tasks {# this is a list of tasks#}
+        let current_task=tasks[round-1] {# this is the current task#}
         console.log(current_task)
-
         if (current_task=='Ball_bucket_task'){
-                document.getElementById('Ball_bucket_task').value=hischoice
+                document.getElementById('id_Ball_bucket_task').value=hischoice
         } else if (current_task=='Count_letters_task'){
-                document.getElementById('Count_letters_task').value=hischoice
+                document.getElementById('id_Count_letters_task').value=hischoice
         } else if (current_task=='Maze_task'){
-                document.getElementById('Maze_task').value=hischoice
+                document.getElementById('id_Maze_task').value=hischoice
         } else if (current_task=='MRT_task'){
-                document.getElementById('MRT_task').value=hischoice
+                document.getElementById('id_MRT_task').value=hischoice
         } else if (current_task=='Numbers_in_numbers_task'){
-                document.getElementById('Numbers_in_numbers_task').value=hischoice
+                document.getElementById('id_Numbers_in_numbers_task').value=hischoice
         } else if (current_task=='NV_task'){
-                console.log(hischoice)
-                document.getElementById('id_NV_task').value=hischoice.toString()
+                document.getElementById('id_NV_task').value=hischoice
         } else if (current_task=='Word_in_word_task'){
-                document.getElementById('Word_in_word_task').value=hischoice
+                document.getElementById('id_Word_in_word_task').value=hischoice
         } else if (current_task=='Word_order_task'){
-                document.getElementById('Word_order_task').value=hischoice
+                document.getElementById('id_Word_order_task').value=hischoice
         } else if (current_task=='Word_puzzle_task'){
-                document.getElementById('Word_puzzle_task').value=hischoice
+                document.getElementById('id_Word_puzzle_task').value=hischoice
         }
 
-
-
-
-
-
-        if(hischoice>0){
-        document.getElementById("hischoice").innerHTML = 'I think (or bet?), on average, ' + 'women'.bold() +' correctly answered ' + (hischoice).toString().bold() + ' more questions than'+' men.'.bold()
+        if(hischoice_percentage>0){
+        document.getElementById("hischoice").innerHTML = 'I think, on average, ' + 'men'.bold() +' correctly answered ' + (hischoice_percentage).toString().bold() + '%'.bold() + ' more questions than'+' women.'.bold()
         }
         else{
-        document.getElementById("hischoice").innerHTML ='I think, on average, ' + 'women'.bold() +' correctly answered ' + (-hischoice).toString().bold() + ' more questions than'+' men.'.bold()
+        document.getElementById("hischoice").innerHTML ='I think, on average, ' + 'women'.bold() +' correctly answered ' + (-hischoice_percentage).toString().bold() + '%'.bold() + ' more questions than'+' men.'.bold()
         }
 
-        //document.getElementById("id_players_slider_choice").value=hischoice
     }
 
     function myFunctionReady(){
@@ -65,24 +60,28 @@
 
 
 {#When player is ready to answer he will press this button#}
-<button id="ready-button" onclick="myFunctionReady()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
+<button type="button" id="ready-button" onclick="myFunctionReady()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
 
 {#This is the div for the slider, i set this initially to be hidden to avoid any anchoring effects#}
 <div id="slider-div" class="initially-hidden" style="display:none">
-    <label for="slider_choice_django" class="form-label">How many more questions, do you think, men answered compared to women?</label>
-    <input type="range" class="form-range" min="-10" max="10" step="0.1" id="slider_choice_django" oninput="myFunction()"> {#slider input#}
+    <label for="slider_choice_django" class="form-label">How many more questions, do you think, men answered compared to women? <strong>[in percentage points]</strong></label>
+    <input type="range" class="form-range" min="-1" max="1" step="0.01" id="slider_choice_django" oninput="myFunction()"> {#slider input#}
 
         {#This paragtaph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
         <p id="hischoice"></p>
 </div>
 
 
+    <div style="display:none">
+        {{ formfield task_name}}
+    </div>
 
-    {{ formfield task_name}}
-    {{ formfield_errors task_name }}
-    <div id="next-button" class="div-pls-change" style="display:none">
+
+
+    <div id="next-button" style="display:none">
         {{ next_button }}
-    <div>
+    </div>
+
+
 
 {{ endblock }}
-
