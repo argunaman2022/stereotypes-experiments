@@ -1,11 +1,12 @@
 {{ block title }}
-    Results Page
+    Results
 {{ endblock }}
 
 {{ block content }}
 <p>
-    You earned {{participant.payoff_plus_participation_fee()}}, {{participant.payoff}} from questions and the rest from finishing the survey
-    Thanks!
+    You earned {{participant.payoff_plus_participation_fee()}}, {{participant.payoff}} from questions based on your accuracy and {{participation_fee}} from finishing the survey. <br>
+
+    Thanks for participating!
 </p>
     {{ next_button }}
 {{ endblock }}

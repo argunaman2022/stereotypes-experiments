@@ -1,5 +1,6 @@
 from otree.api import *
 import itertools
+import random
 
 doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
@@ -9,7 +10,7 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 3
     Tasks_path= 'Survey/tasks/'
     Instruction_path='_templates/instructions.html'
     #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
@@ -40,10 +41,14 @@ class Player(BasePlayer):
     Numbers_in_numbers_task=models.FloatField( blank=True, min=-1)
     MRT_task=models.FloatField(blank=True , min=-1)
 
+
 #### Functions and variables
-#list of 9 unique tasks
-tasks=['NV_task', 'Maze_task','Count_letters_task','Word_puzzle_task','Word_order_task',
-        'Count_numbers_task','Ball_bucket_task','Word_in_word_task','Numbers_in_numbers_task','MRT_task']
+
+# list of 9 unique tasks, defined on the participant level to to allow shuffling is in the settings menu
+tasks = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzzle_task', 'Word_order_task',
+             'Count_numbers_task', 'Ball_bucket_task', 'Word_in_word_task', 'Numbers_in_numbers_task', 'MRT_task']
+#todo: make randomize the order make it balanced
+#todo: make sure the participant can only move to next page after moving the slider.
 
 #Dictionary of true score differences between men and women to be used to calculate payoffs.
 # Positive x implies men answered x percentage points more.
@@ -73,9 +78,10 @@ class Introduction(Page):
 class Choice(Page):
     form_model = 'player'
     form_fields = tasks
+    print(tasks)
 
     @staticmethod
-    def vars_for_template(player: Player, form_fields=form_fields, tasks_path=C.Tasks_path):
+    def vars_for_template(player: Player, form_fields=form_fields, tasks_path=C.Tasks_path, tasks=tasks):
         round_number = player.round_number
         task = tasks[round_number-1]
 
@@ -109,6 +115,13 @@ class Results(Page):
     @staticmethod
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        participant= player.participant
+        participation_fee= participant.payoff_plus_participation_fee() - participant.payoff
+
+        return ({'participation_fee':participation_fee})
 
 
 page_sequence = [Choice, Results]
