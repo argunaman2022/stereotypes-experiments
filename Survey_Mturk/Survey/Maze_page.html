@@ -1,0 +1,62 @@
+{{ block title }}
+    Question
+{{ endblock }}
+
+{{ block content }}
+
+
+
+<script>
+    function myFunction(){
+        document.getElementById("next-button").style.display="inline" {# show the next button#}
+
+        {# store the chosen value of the slider in var "hischoice"#}
+        hischoice=document.getElementById('slider_choice_django').value {# value chosen by the participant on the slider #}
+        hischoice_percentage= Math.round(parseFloat(hischoice)*100) {# in percentage points #}
+
+        document.getElementById('id_Maze_task').value=hischoice
+
+        if(hischoice_percentage>0){
+        document.getElementById("hischoice").innerHTML = 'I think, on average, ' + 'men'.bold() +' correctly answered ' + (hischoice_percentage).toString().bold() + '%'.bold() + ' more questions than'+' women.'.bold()
+        }
+        else{
+        document.getElementById("hischoice").innerHTML ='I think, on average, ' + 'women'.bold() +' correctly answered ' + (-hischoice_percentage).toString().bold() + '%'.bold() + ' more questions than'+' men.'.bold()
+        }
+    }
+
+    function myFunctionReady(){
+        document.getElementById("ready-button").style.display="none" {# hide the ready-button#}
+        document.getElementById("slider-div").style.display="inline" {#show the slider-div#}
+    }
+</script>
+
+
+{{ include path_task}}
+
+
+{#When player is ready to answer he will press this button#}
+<button type="button" id="ready-button" onclick="myFunctionReady()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
+
+{#This is the div for the slider, i set this initially to be hidden to avoid any anchoring effects#}
+<div id="slider-div" class="initially-hidden" style="display:none">
+    <label for="slider_choice_django" class="form-label">How many more questions, do you think, men answered compared to women? <strong>[in percentage points]</strong></label>
+    <input type="range" class="form-range" min="-1" max="1" step="0.01" id="slider_choice_django" oninput="myFunction()"> {#slider input#}
+
+        {#This paragtaph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
+        <p id="hischoice" style="font-size:25px"><strong>Move the slider to continue</strong></p>
+</div>
+
+
+    <div style="display:inline">
+        {{ formfields}}
+    </div>
+
+
+
+    <div id="next-button" style="display:none">
+        {{ next_button }}
+    </div>
+
+
+
+{{ endblock }}
