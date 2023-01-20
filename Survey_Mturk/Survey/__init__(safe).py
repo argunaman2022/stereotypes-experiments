@@ -11,7 +11,7 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 9
+    NUM_ROUNDS = 1
     Tasks_path= 'Survey/tasks/'
     Instruction_path='_templates/instructions.html'
     #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
@@ -75,7 +75,9 @@ class Introduction(Page):
     def is_displayed(player: Player):
         return player.round_number == 1
 
-
+class NV_task(Page):
+    form_model = 'player'
+    form_fields = 'NV_task'
 class Choice(Page):
     form_model = 'player'
     @staticmethod
