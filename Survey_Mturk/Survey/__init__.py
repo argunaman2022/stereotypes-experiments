@@ -75,23 +75,29 @@ class Introduction(Page):
     def is_displayed(player: Player):
         return player.round_number == 1
 
+    def before_next_page(player: Player, timeout_happened):
+        '''in this function to each participant i assign a random task order:
+        1. make sure to create the "shuffled_tasks" in the settings.py participant field
+        2. shuffle the tasks before assigning the participant
+        3. make sure this code is only run in the first round. alternatively one can set a seed for shuffling.
+        4. IMPORTANT! MAKE SURE TO USE player.participant.shuffled_tasks instead of tasks
+        '''
+        if player.round_number==1:
+            random.shuffle(tasks)
+            print(tasks)
+            player.participant.shuffled_tasks= tasks
+
 
 class Choice(Page):
     form_model = 'player'
+
+
     @staticmethod
     def get_form_fields(player: Player):
         'dynamically setting the formfield to depend on the round number.'
-        current_task = tasks[player.round_number-1]
-        # if player.round_number>1: #if we are in round 2 then current player has access to player 1 (who's the same participant) fields
-        #     prev_player = player.in_round(player.round_number - 1)
-        # else:
-        #     prev_player = player
-        #
-        # if player.round_number>1:
-        #     for task in tasks[0:player.round_number-2]:
-        #         player.task= getattr(prev_player, task)
-        return [current_task]
+        current_task = player.participant.shuffled_tasks[player.round_number-1]
 
+        return [current_task]
 
     @staticmethod
     def vars_for_template(player: Player, tasks_path=C.Tasks_path):
@@ -100,31 +106,29 @@ class Choice(Page):
         2. need round_number to select the current task using JS
         '''
         round_number = player.round_number
-        task = tasks[round_number-1]
+        task = player.participant.shuffled_tasks[round_number-1]
         path_task = tasks_path + task + '.html'
-        return dict(
-            path_task=path_task,
-            round_number=round_number,
-        )
+        return dict(path_task=path_task,
+                    round_number=round_number,
+                    amount_questions= C.NUM_ROUNDS)
 
     @staticmethod
     def js_vars(player: Player):
         'i use the round_number and list of tasks to select the current task using JS, for this i need to pass these to JS in the page'
-        dict = {'tasks': tasks, 'round_number': player.round_number}
+        dict = {'tasks': player.participant.shuffled_tasks, 'round_number': player.round_number}
         return dict
 
     def before_next_page(player: Player, timeout_happened):
         'updates the participant\'s payoff'
-        task = tasks[player.round_number - 1] # get the current task name
+        task = player.participant.shuffled_tasks[player.round_number - 1] # get the current task name
         # todo: fix the payoff function
         players_answer = getattr(player, task) #player's answer is stored in player.task field
         true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
-        earning_from_question = 1 - (true_difference - players_answer)**2 #calculate earnings of participant
+        earning_from_question = max(0,1 - (true_difference - players_answer)**2) #calculate earnings of participant, min 0
         participant = player.participant #get the participant
         participant.payoff = participant.payoff + earning_from_question #edit the participants earning
-        print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2")
-
-
+        value = 1 - (true_difference - players_answer) ** 2
+        print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2={value}")
 
 
 class Results(Page):
