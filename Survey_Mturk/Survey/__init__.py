@@ -144,4 +144,4 @@ class Results(Page):
         return ({'participation_fee':participation_fee})
 
 
-page_sequence = [Introduction, Choice, Results]
+page_sequence = [Introduction, Choice,  Results]
