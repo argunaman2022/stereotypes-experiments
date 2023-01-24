@@ -11,7 +11,7 @@ SESSION_CONFIGS = [
 
 SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00, participation_fee=2.00, doc="",
-    mturk_hit_settings=dict(
+    mturk_hit_settings=dict( #todo: where do i specify completion code?
         keywords='bonus, study',
         #todo: change title
         title='Assess gender difference in 9 tasks.',

@@ -40,14 +40,11 @@ class Player(BasePlayer):
 
 #Functions and variables
 
-# list of 9 unique tasks, defined on the participant level to to allow shuffling is in the settings
+#This is the list of tasks. Note that in settings.py on the participant level shuffled_tasks is stored.
 tasks = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzzle_task', 'Word_order_task',
              'Count_numbers_task', 'Ball_bucket_task', 'Word_in_word_task', 'Numbers_in_numbers_task', 'MRT_task']
-#todo: make randomize the order make it balanced
-#todo: make sure the participant can only move to next page after moving the slider.
 
-#Dictionary of true score differences between men and women to be used to calculate payoffs.
-# Positive x implies men answered x percentage points more.
+#Dictionary of true score differences between men and women to be used to calculate payoffs. Positive x implies men answered x percentage points more.
 true_difference_list={
     'NV_task': 0.05,
     'Maze_task': 0.11,
@@ -60,7 +57,6 @@ true_difference_list={
     'Numbers_in_numbers_task':0,
     'MRT_task':0.15
 }
-
 
 class Introduction(Page):
     form_model = 'player'
@@ -82,16 +78,13 @@ class Introduction(Page):
             print(tasks)
             player.participant.shuffled_tasks= tasks
 
-
 class Choice(Page):
     form_model = 'player'
-
 
     @staticmethod
     def get_form_fields(player: Player):
         'dynamically setting the formfield to depend on the round number.'
         current_task = player.participant.shuffled_tasks[player.round_number-1]
-
         return [current_task]
 
     @staticmethod
@@ -123,8 +116,7 @@ class Choice(Page):
         participant = player.participant #get the participant
         participant.payoff = participant.payoff + earning_from_question #edit the participants earning
         value = 1 - (true_difference - players_answer) ** 2
-        print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2={value}")
-
+        #print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2={value}")
 
 class Results(Page):
     @staticmethod
