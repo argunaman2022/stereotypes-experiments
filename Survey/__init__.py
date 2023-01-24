@@ -8,6 +8,8 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 #todo: think about comprehension and attention checks
 #todo write code for how long each question took to answer per participant.
 #todo: it seems using multiple rounds creates multiple players
+#todo: qualifiaction requirements for mturk
+#todo: currently using psycopg2-binary because of an issue at render.com [see requirements.txt], one should best use no binary.
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
