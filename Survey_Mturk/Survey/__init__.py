@@ -11,26 +11,22 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 9
+    NUM_ROUNDS = 10
     Tasks_path= 'Survey/tasks/'
-    Instruction_path='_templates/instructions.html'
+    Instruction_path='_templates/global/instructions.html'
     #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
 
 class Subsession(BaseSubsession):
     pass
 
-
 class Group(BaseGroup):
     pass
 
-
 class Player(BasePlayer):
-    #demogragphics
     age=models.IntegerField(min=16, max=99)
     gender=models.StringField(choices=['Male','Female','Other'],optional=True)
 
     'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
-    #choices
     NV_task=models.FloatField(min=-1)
     Maze_task=models.FloatField(min=-1)
     Count_letters_task=models.FloatField(min=-1)
@@ -42,10 +38,9 @@ class Player(BasePlayer):
     Numbers_in_numbers_task=models.FloatField(min=-1)
     MRT_task=models.FloatField(min=-1)
 
+#Functions and variables
 
-#### Functions and variables
-
-# list of 9 unique tasks, defined on the participant level to to allow shuffling is in the settings menu
+# list of 9 unique tasks, defined on the participant level to to allow shuffling is in the settings
 tasks = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzzle_task', 'Word_order_task',
              'Count_numbers_task', 'Ball_bucket_task', 'Word_in_word_task', 'Numbers_in_numbers_task', 'MRT_task']
 #todo: make randomize the order make it balanced

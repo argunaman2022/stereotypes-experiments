@@ -10,7 +10,23 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=2.00, doc=""
+    real_world_currency_per_point=1.00, participation_fee=2.00, doc="",
+    mturk_hit_settings=dict(
+        keywords='bonus, study',
+        #todo: change title
+        title='Assess gender difference in 9 tasks.',
+        #todo: work on study desc.
+        description=''' 
+        In this study you will be given a description of tasks that were given to previous study participants.
+        Your objective is to guess the average score difference between males and females.
+        ''',
+        frame_height=500,
+        template='global/mturk_template.html',
+        minutes_allotted_per_assignment=60,
+        expiration_hours=7 * 24,
+        qualification_requirements=[]
+        # grant_qualification_id='YOUR_QUALIFICATION_ID_HERE', # to prevent retakes #todo: learn how to do this
+    )
 )
 
 PARTICIPANT_FIELDS = []
