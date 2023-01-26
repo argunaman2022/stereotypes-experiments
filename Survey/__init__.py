@@ -26,7 +26,7 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     age=models.IntegerField(min=16, max=99)
-    gender=models.StringField(choices=['Male','Female','Other'],optional=True)
+    gender=models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
 
     'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
     NV_task=models.FloatField(min=-1)
@@ -60,14 +60,15 @@ true_difference_list={
     'MRT_task':0.15
 }
 
-class Introduction(Page):
+class Demographics(Page):
     form_model = 'player'
     form_fields = ['gender', 'age']
-
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
 
+
+class Introduction(Page):
     def before_next_page(player: Player, timeout_happened):
         '''in this function to each participant i assign a random task order:
         1. make sure to create the "shuffled_tasks" in the settings.py participant field
@@ -133,4 +134,4 @@ class Results(Page):
         return ({'participation_fee':participation_fee})
 
 
-page_sequence = [Introduction, Choice,  Results]
+page_sequence = [Demographics, Introduction, Choice,  Results]
