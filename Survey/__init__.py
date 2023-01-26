@@ -69,6 +69,10 @@ class Demographics(Page):
 
 
 class Introduction(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
     def before_next_page(player: Player, timeout_happened):
         '''in this function to each participant i assign a random task order:
         1. make sure to create the "shuffled_tasks" in the settings.py participant field
