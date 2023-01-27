@@ -15,7 +15,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 10
     Tasks_path= 'Survey/tasks/'
-    Instruction_path='_templates/global/instructions.html'
+    Instruction_path='_templates/global/Instructions.html'
     #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
 
 class Subsession(BaseSubsession):
