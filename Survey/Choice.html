@@ -10,7 +10,6 @@
 function myFunction(){
     document.getElementById("next-button").style.display="inline" {# show the next button#}
 
-    {# store the chosen value of the slider in var "percent_choice"#}
     percent_choice=document.getElementById('input-field').value {# value chosen by the participant on the slider #}
     gender_choice=document.getElementById('gender').value
 
@@ -51,12 +50,16 @@ function myFunction(){
     }
 
     }
-
 }
 
 function myFunctionReady(){
     document.getElementById("ready-button").style.display="none" {# hide the ready-button#}
     document.getElementById("input-div").style.display="inline" {#show the input-div#}
+}
+
+function funSkipQuestion(){
+
+
 }
 </script>
 
@@ -86,10 +89,12 @@ function myFunctionReady(){
     <p id="percent_choice" style="font-size:25px"><strong></strong></p>
 </div>
 <br>
-
     <div style="display:none">{{ formfields}}</div>
+
     <div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
         {{ next_button }}
     </div>
+
+    <button class="otree-btn-next btn btn-primary" onclick="funSkipQuestion()"> Skip Question (for dev.) </button>
 
 {{ endblock }}

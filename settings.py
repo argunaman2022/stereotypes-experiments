@@ -14,11 +14,11 @@ SESSION_CONFIG_DEFAULTS = dict(
     mturk_hit_settings=dict( #todo: where do i specify completion code?
         keywords='bonus, study',
         #todo: change title
-        title='Assess gender difference in 9 tasks.',
+        title='An academic survey', #todo: work on title if needbe
         #todo: work on study desc.
         description=''' 
-        In this study you will be given a description of tasks that were given to previous study participants.
-        Your objective is to guess the average score difference between males and females.
+        In this study you will be asked 10 survey questions. In each question your task is to guess performance of past study participants.
+        You will be paid a completion fee as well as a bonus fee which depends on how close your answers are to the true values.
         ''',
         frame_height=500,
         template='global/mturk_template.html',

@@ -29,16 +29,17 @@ class Player(BasePlayer):
     gender=models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
 
     'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
-    NV_task=models.FloatField(min=-1)
-    Maze_task=models.FloatField(min=-1)
-    Count_letters_task=models.FloatField(min=-1)
-    Word_puzzle_task=models.FloatField( min=-1)
-    Word_order_task=models.FloatField(min=-1)
-    Count_numbers_task=models.FloatField( min=-1)
-    Ball_bucket_task=models.FloatField(min=-1)
-    Word_in_word_task=models.FloatField(min=-1)
-    Numbers_in_numbers_task=models.FloatField(min=-1)
-    MRT_task=models.FloatField(min=-1)
+    ComprehensionCheck_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    NV_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Maze_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Count_letters_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Word_puzzle_task=models.FloatField( min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Word_order_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Count_numbers_task=models.FloatField( min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Ball_bucket_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Word_in_word_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    Numbers_in_numbers_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    MRT_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
 
 #Functions and variables
 
@@ -48,6 +49,7 @@ tasks = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzzle_task', 'Word
 
 #Dictionary of true score differences between men and women to be used to calculate payoffs. Positive x implies men answered x percentage points more.
 true_difference_list={
+    'ComprehensionCheck_task':0.5,
     'NV_task': 0.05,
     'Maze_task': 0.11,
     'Count_letters_task': -0.07,
@@ -85,7 +87,22 @@ class Introduction(Page):
             print(tasks)
             player.participant.shuffled_tasks= tasks
 
+class ComprehensionCheck(Page):
+    form_model = 'player'
+    form_fields = ['ComprehensionCheck_task']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            path_task= C.Tasks_path + 'ComprehensionCheck_task.html'
+        )
+
 class Choice(Page):
+    'this is the class for the page where survey takes place. each question in this page is shuffled.'
     form_model = 'player'
 
     @staticmethod
@@ -138,4 +155,4 @@ class Results(Page):
         return ({'participation_fee':participation_fee})
 
 
-page_sequence = [Demographics, Introduction, Choice,  Results]
+page_sequence = [Demographics, Introduction, ComprehensionCheck, Choice,  Results]

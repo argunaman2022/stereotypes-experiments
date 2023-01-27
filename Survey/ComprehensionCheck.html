@@ -1,9 +1,95 @@
 {{ block title }}
-    Question {{round_number}} of {{amount_questions}}
+    Test Round
 {{ endblock }}
 
 {{ block content }}
 
+<script>
 
+
+function myFunction(){
+    document.getElementById("check-answer-button").style.display="inline"
+
+    percent_choice=document.getElementById('input-field').value {# value chosen by the participant on the slider #}
+    group_choice=document.getElementById('group').value
+
+
+    {# the following if statement ensures that if the participant has not chosen a group he's prompted to choose one.#}
+    if (group_choice=="default"){
+        document.getElementById("percent_choice").innerHTML = "Choose a value from the dropdown menu to continue"
+    }
+    else{
+        decimal_percent= percent_choice/100
+        document.getElementById('id_ComprehensionCheck_task').value=decimal_percent
+
+    if(group_choice=="group A"){
+        document.getElementById("percent_choice").innerHTML = 'Your answer: I think, on average, ' + 'Group A'.bold() +' correctly answered ' + (percent_choice).toString().bold() + '%'.bold() + ' more questions than'+' Group B.'.bold()
+    }
+    else{
+        document.getElementById("percent_choice").innerHTML ='Your answer: I think, on average, ' + 'Group B'.bold() +' correctly answered ' + (percent_choice).toString().bold() + '%'.bold() + ' more questions than'+' Group A.'.bold()
+    }
+    }
+
+}
+
+function myFunctionReady(){
+    document.getElementById("ready-button").style.display="none" {# hide the ready-button#}
+    document.getElementById("input-div").style.display="inline" {#show the input-div#}
+}
+
+function checkAnswer(){
+    document.getElementById("check-answer-button").style.display="none"
+    console.log(group_choice, percent_choice)
+    if (group_choice=="group B" && percent_choice=="50"){
+    document.getElementById("answer-validity").innerHTML='Correct!'.bold()
+    document.getElementById("next-button").style.display="inline"
+    } else {
+    document.getElementById("answer-validity").innerHTML='Incorrect Answer! Try again?'.bold()
+    document.getElementById("next-button").style.display="none"
+    }
+}
+</script>
+
+<p> This is a test round. You can only proceed to the survey if you answer this question correctly. </p>
+
+
+{{ include path_task}} {# Displays the html of the task from survey/tasks/....html#}
+
+
+
+{#When player is ready to answer he will press this button#}
+<button type="button" id="ready-button" onclick="myFunctionReady()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
+
+
+{#This is the div for the input field, i set this initially to be hidden to avoid any anchoring effects#}
+<div id="input-div" class="initially-hidden" style="display:none">
+    I think,
+            <form action="/action_page.php">
+              <select name="group" id="group" oninput="myFunction()">
+                <option value="default">-----</option>
+                <option value="group A">Group A</option>
+                <option value="group B">Group B</option>
+              </select>
+            </form>
+     answered <input type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1"> %
+     more questions correctly.
+    <br>
+    <br>
+    {#This paragraph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
+    <p id="percent_choice" style="font-size:25px"><strong></strong></p>
+</div>
+<br>
+
+    <div style="display:none">{{ formfields}}</div>
+
+    <div id="check-answer-button" style="display:none">
+        <button type="button" class="otree-btn-next btn btn-primary" onclick="checkAnswer()"> Check Answer </button> {# If the answer is incorrect (i.e. != .50) participant is asked to guess again #}
+    </div>
+
+    <p id="answer-validity"></p>
+
+    <div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
+        {{ next_button }}
+    </div>
 
 {{ endblock }}
