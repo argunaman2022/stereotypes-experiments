@@ -40,7 +40,9 @@ LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = False
 
+
 ADMIN_USERNAME = 'admin'
+OTREE_AUTH_LEVEL = 'DEMO'
 # for security, best to set admin password in an environment variable
 #ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
 ADMIN_PASSWORD = 'Margun-2023TEST'
