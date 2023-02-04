@@ -1,14 +1,14 @@
 {{ block title }}
-    Test Round
+    Comprehension Check
 {{ endblock }}
 
 {{ block content }}
 
 <script type="text/javascript" src="{{ static 'js/ComprehensionCheck.js' }}"></script>
 
-<p> This is a test round. You can only proceed to the survey if you answer this question correctly. </p>
+<p> To be able to start the study and be eligible for payment you must answer the following question correctly. <strong>You are alllowed {{Allowed_number_attempts}} attempts</strong>. </p>
 
-{{ include path_task}} {# Displays the html of the task from survey/tasks/....html#}
+{{ include path_task}}
 
 {#When player is ready to answer he will press this button#}
 <button type="button" id="ready-button" onclick="myFunctionReady()" class="otree-btn-next btn btn-primary">I am ready to answer</button> <br>
@@ -24,7 +24,7 @@
                 <option value="group B">Group B</option>
               </select>
             </form>
-     answered <input type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1"> %
+     answered <input type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required> %
      more questions correctly.
     <br>
     <br>
@@ -37,7 +37,9 @@
 <div id="check-answer-button" style="display:none">
     <button type="button" class="otree-btn-next btn btn-primary" onclick="checkAnswer()"> Check Answer </button> {# If the answer is incorrect (i.e. != .50) participant is asked to guess again #}
 </div>
+
 <p id="answer-validity"></p>
+
 <div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
     {{ next_button }}
 </div>

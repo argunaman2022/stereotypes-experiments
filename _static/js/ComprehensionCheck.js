@@ -5,12 +5,25 @@ $('html').bind('keypress', function(e) {
    }
 })
 
+let Allowed_number_attempts=js_vars.Allowed_number_attempts
+
+window.onload = function() {
+    console.log('window loaded')
+    var attempts_left=localStorage.getItem('attempts_left')
+
+    if(attempts_left==null){
+        console.log('is null')
+        localStorage.setItem("attempts_left", Allowed_number_attempts)
+    }
+    console.log(attempts_left)
+}
+
+
+
 function myFunction(){
     document.getElementById("check-answer-button").style.display="inline"
-
     percent_choice=document.getElementById('input-field').value //value chosen by the participant on the slider
     group_choice=document.getElementById('group').value
-
 
     //the following if statement ensures that if the participant has not chosen a group he's prompted to choose one
     if (group_choice=="default"){
@@ -35,13 +48,23 @@ function myFunctionReady(){
 }
 
 function checkAnswer(){
+    var attempts_left=localStorage.getItem('attempts_left')
+
     document.getElementById("check-answer-button").style.display="none"
-    console.log(group_choice, percent_choice)
-    if (group_choice=="group B" && percent_choice=="50"){
+    if (group_choice=="group B" && percent_choice=="30"){
     document.getElementById("answer-validity").innerHTML='Correct!'.bold()
     document.getElementById("next-button").style.display="inline"
     } else {
-    document.getElementById("answer-validity").innerHTML='Incorrect Answer! Try again?'.bold()
-    document.getElementById("next-button").style.display="none"
+    attempts_left--
+    if (attempts_left<=0){
+    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have no more attempts left.'.bold() + ' Correct answer was: "Group B answered correctly 30% more questions"'
+    document.getElementById("next-button").style.display="inline"
+   }
+    else {
+    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have '.bold() + attempts_left.toString().bold() + ' more attempt(s) left. Please try again'.bold()
     }
+    }
+    localStorage.setItem("attempts_left", attempts_left)
+    document.getElementById("id_attempts").value=attempts_left
 }
+

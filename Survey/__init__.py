@@ -27,19 +27,20 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     age=models.IntegerField(min=16, max=99)
     gender=models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
+    attempts=models.IntegerField(min=-1000, initial=3)
 
     'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
-    ComprehensionCheck_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    NV_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Maze_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Count_letters_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Word_puzzle_task=models.FloatField( min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Word_order_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Count_numbers_task=models.FloatField( min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Ball_bucket_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Word_in_word_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    Numbers_in_numbers_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
-    MRT_task=models.FloatField(min=-1, initial= 0) #todo: before deployment remove INITIAL and the skip buton
+    ComprehensionCheck_task=models.FloatField(min=-1)
+    NV_task=models.FloatField(min=-1)
+    Maze_task=models.FloatField(min=-1)
+    Count_letters_task=models.FloatField(min=-1)
+    Word_puzzle_task=models.FloatField( min=-1)
+    Word_order_task=models.FloatField(min=-1)
+    Count_numbers_task=models.FloatField( min=-1)
+    Ball_bucket_task=models.FloatField(min=-1)
+    Word_in_word_task=models.FloatField(min=-1)
+    Numbers_in_numbers_task=models.FloatField(min=-1)
+    MRT_task=models.FloatField(min=-1)
 
 #Functions and variables
 
@@ -63,17 +64,53 @@ true_difference_list={
 }
 
 class Demographics(Page):
+    '''
+    1. ask for gender and age
+    2. assign the participant field 'attempts' an initial value of 3 only if it is round 1.
+    '''
     form_model = 'player'
     form_fields = ['gender', 'age']
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
+    def before_next_page(player: Player, timeout_happened):
+        if player.round_number == 1:
+            # make sure to create this participant field in the settings file
+            player.participant.attempts = 3
 
+class ComprehensionCheck(Page):
+    '''
+    1. Participant starts with 3 attempts.
+    2. Ask the participant to submit an answer to the comprehension check, store how many attempts they needed to solve.
+    3. Store this number in the partiicpant field. Participant can only proceed if this value is greater than 0 i.e. if they did not fail
+    '''
+    form_model = 'player'
+    form_fields = ['ComprehensionCheck_task', 'attempts']
 
-class Introduction(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {
+            'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
+            'Allowed_number_attempts': player.attempts
+        }
+    def js_vars(player: Player):
+        return {'Allowed_number_attempts': player.participant.attempts}
+    def before_next_page(player: Player, timeout_happened):
+        if player.round_number==1:
+            player.participant.attempts= player.attempts
+
+class Introduction(Page):
+    '''
+    1. Show introduction as well as description of whats to follow
+    2. Shuffle tasks and assign it to the participant field
+    '''
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1 and player.participant.attempts>=0
 
     def before_next_page(player: Player, timeout_happened):
         '''in this function to each participant i assign a random task order:
@@ -87,22 +124,13 @@ class Introduction(Page):
             print(tasks)
             player.participant.shuffled_tasks= tasks
 
-class ComprehensionCheck(Page):
-    form_model = 'player'
-    form_fields = ['ComprehensionCheck_task']
-
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == 1
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        return dict(
-            path_task= C.Tasks_path + 'ComprehensionCheck_task.html'
-        )
 
 class Choice(Page):
-    'this is the class for the page where survey takes place. each question in this page is shuffled.'
+    '''
+    1. Show the question from the shuffled list and elicit an answer
+    2. store the answer in a player level
+    3. calculate payoffs from this question and update participant payoff
+    '''
     form_model = 'player'
 
     @staticmethod
@@ -110,6 +138,8 @@ class Choice(Page):
         'dynamically setting the formfield to depend on the round number.'
         current_task = player.participant.shuffled_tasks[player.round_number-1]
         return [current_task]
+    def is_displayed(player: Player):
+        return player.participant.attempts >= 0 #those who failed the comprehension check wont see this page
 
     @staticmethod
     def vars_for_template(player: Player, tasks_path=C.Tasks_path):
@@ -145,7 +175,7 @@ class Choice(Page):
 class Results(Page):
     @staticmethod
     def is_displayed(player:Player):
-        return player.round_number==C.NUM_ROUNDS
+        return player.round_number==C.NUM_ROUNDS and player.participant.attempts >= 0
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -155,4 +185,4 @@ class Results(Page):
         return ({'participation_fee':participation_fee})
 
 
-page_sequence = [Demographics, Introduction, ComprehensionCheck, Choice,  Results]
+page_sequence = [Demographics, ComprehensionCheck, Introduction,  Choice,  Results]

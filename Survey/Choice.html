@@ -17,7 +17,7 @@
     I think,
             <form action="/action_page.php">
               <label for="gender"></label>
-              <select name="gender" required id="gender" oninput="myFunction()">
+              <select name="gender" required id="gender" onchange="funDropdownInput()">
                 <option value="default">-----</option>
                 <option value="men">men</option>
                 <option value="women">women</option>
@@ -28,7 +28,7 @@
     <br>
     <br>
     {#This paragraph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
-    <p id="percent_choice" style="font-size:25px"><strong></strong></p>
+    <p id="percent_choice" style="font-size:25px"><strong>Answer the question above to continue.</strong></p>
 </div>
 <br>
 <div style="display:none">{{ formfields}}</div>

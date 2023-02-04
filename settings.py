@@ -29,7 +29,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     )
 )
 
-PARTICIPANT_FIELDS = ['shuffled_tasks']
+PARTICIPANT_FIELDS = ['shuffled_tasks', 'attempts']
 SESSION_FIELDS = []
 
 # ISO-639 code
