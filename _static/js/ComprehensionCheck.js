@@ -4,7 +4,7 @@ $('html').bind('keypress', function(e) {
       return false;
    }
 })
-
+//comment
 let Allowed_number_attempts=js_vars.Allowed_number_attempts
 
 window.onload = function() {

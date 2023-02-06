@@ -6,7 +6,7 @@ $('html').bind('keypress', function(e) {
 })
 let percent_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
 let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
-
+console.log("debugging")
 function myfunction(){
     let current_task=js_vars.tasks[js_vars.round_number-1] // this is the current task
     decimal_percent= percent_choice/100
