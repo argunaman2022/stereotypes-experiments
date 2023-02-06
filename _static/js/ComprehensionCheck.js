@@ -8,11 +8,9 @@ $('html').bind('keypress', function(e) {
 let Allowed_number_attempts=js_vars.Allowed_number_attempts
 
 window.onload = function() {
-    console.log('window loaded')
     var attempts_left=localStorage.getItem('attempts_left')
 
     if(attempts_left==null){
-        console.log('is null')
         localStorage.setItem("attempts_left", Allowed_number_attempts)
     }
     console.log(attempts_left)

@@ -43,7 +43,7 @@ function myfunction(){
 
 function funDropdownInput(){
     console.log(percent_choice,gender_choice)
-    if (gender_choice!="default" and percent_choice!=null){
+    if (gender_choice!="default" && percent_choice!=null){
     myfunction()
     console.log('check 1')
     document.getElementById("next-button").style.display="inline"
@@ -53,7 +53,7 @@ function funDropdownInput(){
 
 
 function funValueInput(){
-    if (gender_choice!="default" and percent_choice!=null){
+    if (gender_choice!="default" && percent_choice!=null){
     myfunction()
     console.log('check 2')
     document.getElementById("next-button").style.display="inline"
@@ -61,7 +61,6 @@ function funValueInput(){
     else {document.getElementById("next-button").style.display="none"}
 
     // the following if statement ensures that if the participant has not chosen a gender he's prompted to choose one
-
 }
 
 function myFunctionReady(){
