@@ -169,7 +169,7 @@ class Choice(Page):
         earning_from_question = max(0,1 - (true_difference - players_answer)**2) #calculate earnings of participant, min 0
         participant = player.participant #get the participant
         participant.payoff = participant.payoff + earning_from_question #edit the participants earning
-        value = 1 - (true_difference - players_answer) ** 2
+        value = 0.5 - (true_difference - players_answer) ** 2
         #print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2={value}")
 
 class Results(Page):
