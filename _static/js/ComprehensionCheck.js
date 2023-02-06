@@ -7,7 +7,7 @@ $('html').bind('keypress', function(e) {
 
 let Allowed_number_attempts=js_vars.Allowed_number_attempts
 
-window.onload = function() {
+window.onload = function(){
     var attempts_left=localStorage.getItem('attempts_left')
 
     if(attempts_left==null){
@@ -47,8 +47,8 @@ function myFunctionReady(){
 
 function checkAnswer(){
     var attempts_left=localStorage.getItem('attempts_left')
-
     document.getElementById("check-answer-button").style.display="none"
+
     if (group_choice=="group B" && percent_choice=="30"){
     document.getElementById("answer-validity").innerHTML='Correct!'.bold()
     document.getElementById("next-button").style.display="inline"

@@ -139,7 +139,7 @@ class Choice(Page):
         current_task = player.participant.shuffled_tasks[player.round_number-1]
         return [current_task]
     def is_displayed(player: Player):
-        return player.participant.attempts >= 0 #those who failed the comprehension check wont see this page
+        return player.participant.attempts >= 1 #those who failed the comprehension check wont see this page
 
     @staticmethod
     def vars_for_template(player: Player, tasks_path=C.Tasks_path):

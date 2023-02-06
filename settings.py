@@ -24,7 +24,31 @@ SESSION_CONFIG_DEFAULTS = dict(
         template='global/mturk_template.html',
         minutes_allotted_per_assignment=60,
         expiration_hours=7 * 24,
-        qualification_requirements=[]
+        qualification_requirements=[
+        # Only US
+        {
+            'QualificationTypeId': "00000000000000000071",
+            'Comparator': "EqualTo",
+            'LocaleValues': [{'Country': "US"}]
+        },
+        # At least 500 HITs approved
+        {
+            'QualificationTypeId': "00000000000000000040",
+            'Comparator': "GreaterThanOrEqualTo",
+            'IntegerValues': [500]
+        },
+        # At least 95% of HITs approved
+        {
+            'QualificationTypeId': "000000000000000000L0",
+            'Comparator': "GreaterThanOrEqualTo",
+            'IntegerValues': [95]
+        },
+        # Masters
+        {
+            'QualificationTypeId': "2F1QJWKUDD8XADTFD2Q0G6UTO95ALH",
+            'Comparator': "Exists",
+        }
+        ]
         # grant_qualification_id='YOUR_QUALIFICATION_ID_HERE', # to prevent retakes #todo: learn how to do this
     )
 )

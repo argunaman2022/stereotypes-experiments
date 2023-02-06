@@ -4,10 +4,11 @@ $('html').bind('keypress', function(e) {
       return false;
    }
 })
-let percent_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
-let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
 
 function myfunction(){
+    let percent_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
+    let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
+
     let current_task=js_vars.tasks[js_vars.round_number-1] // this is the current task
     decimal_percent= percent_choice/100
     if (current_task=='Ball_bucket_task'){
@@ -42,6 +43,9 @@ function myfunction(){
 
 
 function funDropdownInput(){
+    let percent_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
+    let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
+
     console.log(percent_choice,gender_choice)
     if (gender_choice!="default" && percent_choice!=null){
     myfunction()
@@ -53,6 +57,9 @@ function funDropdownInput(){
 
 
 function funValueInput(){
+    let percent_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
+    let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
+
     if (gender_choice!="default" && percent_choice!=null){
     myfunction()
     console.log('check 2')
