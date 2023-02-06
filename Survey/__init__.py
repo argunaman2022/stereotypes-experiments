@@ -9,6 +9,7 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 #todo write code for how long each question took to answer per participant.
 #todo: it seems using multiple rounds creates multiple players
 #todo: qualifiaction requirements for mturk
+#todo: hide the debug menu before publishing
 #todo: currently using psycopg2-binary because of an issue at render.com [see requirements.txt], one should best use no binary.
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
@@ -166,11 +167,11 @@ class Choice(Page):
         # todo: fix the payoff function
         players_answer = getattr(player, task) #player's answer is stored in player.task field
         true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
-        earning_from_question = max(0,1 - (true_difference - players_answer)**2) #calculate earnings of participant, min 0
+        value = 0.5 - (true_difference - players_answer) ** 2
+        earning_from_question = max(0,value) #calculate earnings of participant, min 0
         participant = player.participant #get the participant
         participant.payoff = participant.payoff + earning_from_question #edit the participants earning
-        value = 0.5 - (true_difference - players_answer) ** 2
-        #print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 1- ({true_difference} - {players_answer})^2={value}")
+        print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 0.5- ({true_difference} - {players_answer})^2={value}")
 
 class Results(Page):
     @staticmethod
