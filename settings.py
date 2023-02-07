@@ -10,7 +10,7 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=1.00, doc="",
+    real_world_currency_per_point=1.00, participation_fee=0.50, doc="",
     mturk_hit_settings=dict( #todo: where do i specify completion code?
         keywords='bonus, study',
         #todo: change title
@@ -41,19 +41,14 @@ SESSION_CONFIG_DEFAULTS = dict(
         {
             'QualificationTypeId': "000000000000000000L0",
             'Comparator': "GreaterThanOrEqualTo",
-            'IntegerValues': [95]
-        },
-        # Masters
-        {
-            'QualificationTypeId': "2F1QJWKUDD8XADTFD2Q0G6UTO95ALH",
-            'Comparator': "Exists",
+            'IntegerValues': [97]
         }
         ]
         # grant_qualification_id='YOUR_QUALIFICATION_ID_HERE', # to prevent retakes #todo: learn how to do this
     )
 )
 
-PARTICIPANT_FIELDS = ['shuffled_tasks', 'attempts']
+PARTICIPANT_FIELDS = ['shuffled_tasks', 'payment_relevant_task',  'attempts']
 SESSION_FIELDS = []
 
 # ISO-639 code

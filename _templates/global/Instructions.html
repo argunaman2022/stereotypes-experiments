@@ -1,43 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Instructions</title>
-</head>
-<body>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
 
-    <div class="card bg-light m-3">
-        <div class="card-body">
-    
-        <h3>
-            Instructions.
-        </h3>
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
-        <p>
-            <strong>Your Task</strong> <br>
+/* The Close Button */
+.close {
+  color: red;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
 
-            In this HIT you will be shown 10 different tasks that have been used in previous studies.
-            For each of these 10 tasks we ask you to make an educated guess on <strong>how the average performance of men compare to the average performance of women</strong>. <br>
-            <br>
-            In each question you will first see a description of the task. When you are ready to answer press the <strong>"I am ready to answer"</strong> button.
-            Then submit your answer into the box that will appear using the <strong>"Next"</strong> button. <br>
-            <br>
-            
-            <strong>Earnings</strong> <br>
-            After the last question, you will see your total earnings. <br>
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
 
-            First, you are paid <strong>2 USD</strong> for completion of the HIT.
-            Second, in addition to this payment, for each question you are paid based on the accuracy of your answer. If you answer all questions fully accurately you will earn 2 USD+9 USD=<strong>11 USD</strong>.<br>
+ /* Modal Header */
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+/* Modal Body */
+.modal-body {padding: 2px 16px;}
+
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 40%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
 
 
 
+</style>
+
+<script>
+// When the user clicks the button, open the modal, store this information on the player field level.
+function button_click() {
+  document.getElementById("myModal").style.display = "block";
+  document.getElementById("id_payment_checked").value="Read"
+  console.log(document.getElementById("id_payment_checked").value)
+}
+
+// When the user clicks on <span> (x), close the modal
+function span_click(){
+  let btn = document.getElementById("myBtn")
+  document.getElementById("myModal").style.display = "none";
+}
+</script>
+
+
+
+<div class="card bg-light m-3">
+    <div class="card-body">
+
+    <h3>
+        Instructions.
+    </h3>
+
+    <p>
+        <strong>Your Task</strong> <br>
+
+        In this HIT you will be shown 10 different tasks that have been used in previous studies.
+        For each of these 10 tasks we ask you to make an educated guess on <strong>how the average performance of men compare to the average performance of women</strong>. <br>
+        <br>
+        In each question you will first see a description of the task. When you are ready to answer press the <strong>"I am ready to answer"</strong> button.
+        Then submit your answer into the box that will appear using the <strong>"Next"</strong> button. <br>
+        <br>
+
+        <strong>Earnings</strong> <br>
+        After the last question, you will see your total earnings which consist of two components. First, you receive a completion fee of 0.5 USD.  <br>
+        Second, one of the 10 questions will be randomly chosen as a bonus payment. The closer your answer to the true value in the chosen question, the higher your bonus payment.
+        (For an exact description of the bonus payment rule click <button type="button" id="myBtn" onclick="button_click()"> here </button>.)
+    </p>
+
+
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h2>Rule for the bonus payment</h2>
+            <span class="close" onclick="span_click()">&times;</span>
+          </div>
+        <p style="padding: 10px">
+            Your bonus payment is determined according to the following function: <br>
+            "Bonus payment" = max(0, 2USD - abs("your answer" - "true value")*0.075USD). <br>
+            So if your answer is exactly correct you earn 2USD as a bonus payment. <br>
+            If your answer is 10% above or below the true value your bonus payment is 1.25USD.
         </p>
-        
-
-
-        </div>
-
+      </div>
+    </div>
 
     </div>
-</body>
-</html>
+</div>

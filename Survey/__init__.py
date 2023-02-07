@@ -5,19 +5,17 @@ import random
 doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 """
-#todo: think about comprehension and attention checks
-#todo write code for how long each question took to answer per participant.
-#todo: it seems using multiple rounds creates multiple players
-#todo: qualifiaction requirements for mturk
+#todo: think about attention checks
 #todo: hide the debug menu before publishing
-#todo: currently using psycopg2-binary because of an issue at render.com [see requirements.txt], one should best use no binary.
+#todo : grant qualification id to avoid repeat takes.
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 10
     Tasks_path= 'Survey/tasks/'
     Instruction_path='_templates/global/Instructions.html'
-    #note: participation fee is in the session configs #todo make sure this is completion fee not mere participation fee
+    Participation_fee= 0.5
+    Max_bonus_payment=2
 
 class Subsession(BaseSubsession):
     pass
@@ -29,6 +27,7 @@ class Player(BasePlayer):
     age=models.IntegerField(min=16, max=99)
     gender=models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
     attempts=models.IntegerField(min=-1000, initial=3)
+    payment_checked=models.StringField( choices=['Read', 'NotRead'], initial='NotRead')
 
     'The following are hidden fields which we will manually assign after the participant confirms the slider input.'
     ComprehensionCheck_task=models.FloatField(min=-1)
@@ -108,10 +107,19 @@ class Introduction(Page):
     '''
     1. Show introduction as well as description of whats to follow
     2. Shuffle tasks and assign it to the participant field
+    3. Check if participant clicks on the exact payment description.
     '''
+
+    form_model = 'player'
+    form_fields = ['payment_checked']
+
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1 and player.participant.attempts>=0
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return False
 
     def before_next_page(player: Player, timeout_happened):
         '''in this function to each participant i assign a random task order:
@@ -162,16 +170,25 @@ class Choice(Page):
         return dict
 
     def before_next_page(player: Player, timeout_happened):
-        'updates the participant\'s payoff'
-        task = player.participant.shuffled_tasks[player.round_number - 1] # get the current task name
-        # todo: fix the payoff function
-        players_answer = getattr(player, task) #player's answer is stored in player.task field
-        true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
-        value = 0.5 - (true_difference - players_answer) ** 2
-        earning_from_question = max(0,value) #calculate earnings of participant, min 0
-        participant = player.participant #get the participant
-        participant.payoff = participant.payoff + earning_from_question #edit the participants earning
-        print(f" to the task {task} you answered {players_answer} since the true value is {true_difference} you earn 0.5- ({true_difference} - {players_answer})^2={value}")
+        '''
+        Updates participant payoff.
+        1 out of 10 tasks is randomly chosen for payment.
+        We randomly choose this task and store it on the participant field 'payment_relevant_task'.
+        Then, we update the participant's payoff using the following function bonus payment = max(C.Max_bonus_payment - 0.075* abs(true_value-participant's answer),0). total payment = bonus payment + completion fee
+        '''
+        participant = player.participant  # get the participant
+
+        if player.round_number == 1:
+            participant.payment_relevant_task = random.choice(participant.shuffled_tasks) #randomly choose a task to be payment relevant and assign to the participant field.
+            print(f"the randomly chosen task is {participant.payment_relevant_task}")
+
+        task = participant.shuffled_tasks[player.round_number - 1] # get the current task name depending on round number
+        if participant.payment_relevant_task == task:
+            players_answer = getattr(player, task) #player's answer is stored in player.task field
+            true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
+            participant.payoff = max(C.Max_bonus_payment-abs(true_difference - players_answer) ** 0.075,0) #save the participant payoff in its field, note that payoff doesnt include the part. fee
+            print(f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn max(0,(0.5-abs({true_difference} - {players_answer})*0.075)={participant.payoff} USD from this question."
+                  f"In total you have earned {participant.payoff_plus_participation_fee()}")
 
 class Results(Page):
     @staticmethod
