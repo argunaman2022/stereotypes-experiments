@@ -180,15 +180,14 @@ class Choice(Page):
 
         if player.round_number == 1:
             participant.payment_relevant_task = random.choice(participant.shuffled_tasks) #randomly choose a task to be payment relevant and assign to the participant field.
-            print(f"the randomly chosen task is {participant.payment_relevant_task}")
+            #print(f"the randomly chosen task is {participant.payment_relevant_task}")
 
         task = participant.shuffled_tasks[player.round_number - 1] # get the current task name depending on round number
         if participant.payment_relevant_task == task:
             players_answer = getattr(player, task) #player's answer is stored in player.task field
             true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
-            participant.payoff = max(C.Max_bonus_payment-abs(true_difference - players_answer) ** 0.075,0) #save the participant payoff in its field, note that payoff doesnt include the part. fee
-            print(f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn max(0,(0.5-abs({true_difference} - {players_answer})*0.075)={participant.payoff} USD from this question."
-                  f"In total you have earned {participant.payoff_plus_participation_fee()}")
+            participant.payoff = max(0,C.Max_bonus_payment-abs(true_difference - players_answer) * 0.075) #save the participant payoff in its field, note that payoff doesnt include the part. fee
+            print(f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*0.075)={participant.payoff} USD from this question.")
 
 class Results(Page):
     @staticmethod
