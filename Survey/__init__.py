@@ -24,7 +24,7 @@ class Group(BaseGroup):
     pass
 
 class Player(BasePlayer):
-    age=models.IntegerField(min=16, max=99)
+    age=models.IntegerField(min=18, max=99)
     gender=models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
     attempts=models.IntegerField(min=-1000, initial=3)
     payment_checked=models.StringField( choices=['Read', 'NotRead'], initial='NotRead')
@@ -115,7 +115,7 @@ class Introduction(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1 and player.participant.attempts>=0
+        return player.round_number == 1 and player.participant.attempts >= 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -186,13 +186,13 @@ class Choice(Page):
         if participant.payment_relevant_task == task:
             players_answer = getattr(player, task) #player's answer is stored in player.task field
             true_difference = true_difference_list[task] #get the true difference from the trie_difference_list
-            participant.payoff = max(0,C.Max_bonus_payment-abs(true_difference - players_answer) * 0.075) #save the participant payoff in its field, note that payoff doesnt include the part. fee
-            print(f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*0.075)={participant.payoff} USD from this question.")
+            participant.payoff = C.Participation_fee +  max(0,C.Max_bonus_payment-abs(true_difference - players_answer) * 0.075) #save the participant payoff in its field, note that payoff doesnt include the part. fee
+            print(f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn {C.Participation_fee} + max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*0.075)={participant.payoff} USD from this question.")
 
 class Results(Page):
     @staticmethod
     def is_displayed(player:Player):
-        return player.round_number==C.NUM_ROUNDS and player.participant.attempts >= 0
+        return player.round_number==C.NUM_ROUNDS and player.participant.attempts >= 1
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -201,5 +201,18 @@ class Results(Page):
 
         return ({'participation_fee':participation_fee})
 
+class Results_failed_comprehension(Page):
+    @staticmethod
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS and player.participant.attempts <= 1
 
-page_sequence = [Demographics, ComprehensionCheck, Introduction,  Choice,  Results]
+    def before_next_page(player: Player, timeout_happened):
+        '''
+        Sets the participant completion fee to 0 if the participant failed the comprehension check
+        '''
+        participant = player.participant  # get the participant
+
+        if player.round_number==C.NUM_ROUNDS and player.participant.attempts <= 1:
+            participant.payoff = 0
+
+page_sequence = [Demographics, ComprehensionCheck, Introduction,  Choice,  Results, Results_failed_comprehension]

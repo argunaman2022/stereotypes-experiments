@@ -10,7 +10,8 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=0.50, doc="",
+    #NOTE: our participation fee is hardcoded into our bonus payment so we can exclude those who fail the comprehension check from receiving anything.
+    real_world_currency_per_point=1.00, participation_fee=0, doc="",
     mturk_hit_settings=dict( #todo: where do i specify completion code?
         keywords='bonus, study',
         #todo: change title
