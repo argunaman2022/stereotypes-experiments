@@ -5,23 +5,24 @@
     <div class="card-body">
 
     <h3>
-        Instructions.
+        Instructions
     </h3>
 
     <p>
         <strong>Your Task</strong> <br>
-
-        In this HIT you will be shown 10 different tasks that have been used in previous studies.
-        For each of these 10 tasks we ask you to make an educated guess on <strong>how the average performance of men compare to the average performance of women</strong>. <br>
+        In this HIT you will be shown 10 different tasks that have been used in previous studies. Each task was run on a different set of people.
+        For each of these tasks we ask you to make an educated guess on how the average performance of men compares to the average performance of women.
+        <strong>The closer your answer to the true value, the higher your bonus payment.</strong> <br>
         <br>
         In each question you will first see a description of the task. When you are ready to answer press the <strong>"I am ready to answer"</strong> button.
         Then submit your answer into the box that will appear using the <strong>"Next"</strong> button. <br>
         <br>
 
         <strong>Earnings</strong> <br>
-        After the last question, you will see your total earnings which consist of two components. First, you receive a completion fee of 0.5 USD.  <br>
-        Second, one of the 10 questions will be randomly chosen as a bonus payment. The closer your answer to the true value in the chosen question, the higher your bonus payment
-        (for an exact description of the bonus payment rule click <button type="button" id="myBtn" onclick="button_click()"> here </button>).
+        After the last question, you will see your total earnings which consist of two components. First, for completing the HIT you receive a <strong>reward</strong> of 0.5 USD.  <br>
+        Second, one of the 10 questions will be randomly chosen to determine your <strong> bonus </strong> payment. If, for instance, your answer to the randomly selected question is exactly correct, you will earn a bonus of 2 USD.
+        If your answer to the randomly selected question is 10% off the true value, you will earn a bonus of 1.6 USD
+        (for an exact description of the bonus payment rule click <a id="myBtn"  onclick="button_click()"  style="color:blue; cursor:pointer" > here</a>).
     </p>
 
 
@@ -32,10 +33,8 @@
             <span class="close" onclick="span_click()">&times;</span>
           </div>
         <p style="padding: 10px">
-            Your bonus payment is determined according to the following function: <br>
-            "Bonus payment" = max(0, 2USD - abs("your answer" - "true value")*0.075USD). <br>
-            So if your answer is exactly correct you earn 2USD as a bonus payment. <br>
-            If your answer is 10% above or below the true value your bonus payment is 1.25USD.
+            Your bonus payment equals 2 USD minus the absolute difference between your answer and the true value scaled by 0.04. The bonus payment cannot be negative. <br>
+            (2 USD - max[0,("your answer" - "true value")] * 0.04 USD)
         </p>
       </div>
     </div>
