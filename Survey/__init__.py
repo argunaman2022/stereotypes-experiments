@@ -8,6 +8,7 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 #todo: think about attention checks
 #todo: hide the debug menu before publishing
 #todo : grant qualification id to avoid repeat takes.
+#todo: removed, comprehension. add an attentioncheck
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
@@ -27,7 +28,7 @@ class Player(BasePlayer):
     age = models.IntegerField(min=18, max=99)
     gender = models.StringField(choices=['Male','Female','Other'], widget=widgets.RadioSelect)
     race = models.StringField(choices=['White','Black or African American', 'American Indian or Alaska Native','Asian','Native Hawaiian or Other Pacific Islander','Other'])
-    state = models.StringField(choices=["Alaska", "Alabama", "Arkansas", "American Samoa", "Arizona", "California", "Colorado", "Connecticut", "District ", "of Columbia", "Delaware",
+    state = models.StringField(choices=["Alaska", "Alabama", "Arkansas", "American Samoa", "Arizona", "California", "Colorado", "Connecticut", "District of Columbia", "Delaware",
                                         "Florida", "Georgia", "Guam", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland",
                                         "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey",
                                         "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota",
@@ -217,4 +218,4 @@ class Results_failed_comprehension(Page):
         if player.round_number==C.NUM_ROUNDS and player.participant.attempts <= 1:
             participant.payoff = 0
 
-page_sequence = [Demographics, ComprehensionCheck, Introduction,  Choice,  Results, Results_failed_comprehension]
+page_sequence = [Demographics, Introduction,  Choice,  Results, Results_failed_comprehension]

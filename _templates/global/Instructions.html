@@ -34,7 +34,7 @@
           </div>
         <p style="padding: 10px">
             Your bonus payment equals 2 USD minus the absolute difference between your answer and the true value scaled by 0.04. The bonus payment cannot be negative. <br>
-            (2 USD - max[0,("your answer" - "true value")] * 0.04 USD)
+            bonus=max[2 USD - abs("your answer" - "true value") * 0.04 USD, 0 USD]
         </p>
       </div>
     </div>

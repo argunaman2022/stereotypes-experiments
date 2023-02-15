@@ -23,16 +23,16 @@
                 <option value="women">women</option>
               </select>
             </form>
-     answered <input type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="funValueInput()" onKeyUp="funValueInput()" maxlength="4" size="1" required> %
+     answered <input class="noscroll"  type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="funValueInput()" onKeyUp="funValueInput()" maxlength="4" size="1" required>
      more questions correctly.
     <br>
     <br>
     {#This paragraph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
-    <p id="percent_choice" style="font-size:25px"><strong>Answer the question above to continue.</strong></p>
+    <p id="answer-paragraph" style="font-size:25px"><strong>Answer the question above to continue.</strong></p>
 </div>
 <br>
 
-<div style="display:none">{{ formfields}}</div>
+<div style="display:inline">{{ formfields}}</div>
 <div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
     {{ next_button }}
 </div>
