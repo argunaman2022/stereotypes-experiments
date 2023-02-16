@@ -48,16 +48,34 @@ function myfunction(){
             document.getElementById('id_Word_puzzle_task').value=percent_choice
     } else if (current_task=='Count_numbers_task'){
             document.getElementById('id_Count_numbers_task').value=percent_choice
+    } else if (current_task=='Attention_Check'){
+            if (difference_choice == "2023" && gender_choice == "men"){
+            document.getElementById('id_Attention_Check').value= 1}
+            else {
+            document.getElementById('id_Attention_Check').value= 0}
     }
 
-    if(gender_choice=="men"){
-        document.getElementById("answer-paragraph").innerHTML = 'Your answer: I think, on average, ' + 'men'.bold() +' correctly answered ' + (difference_choice).toString().bold() +  ' more questions than'+' women. '.bold()+
-        "In other words, on average, men answered " +(10+difference_choice/2).toString().bold() + " questions, women answered " + (10-difference_choice/2).toString().bold()  +  " questions correctly."
-    }
+
+    if (current_task=='Ball_bucket_task'){
+         if(gender_choice=="men"){
+            document.getElementById("answer-paragraph").innerHTML = 'Your answer: I think, on average, ' + 'men'.bold() +' scored ' + (difference_choice).toString().bold() +  ' more points than'+' women. '.bold()+
+            "In other words, on average, men scored " +(10+difference_choice/2).toString().bold() + " points and women " + (10-difference_choice/2).toString().bold()  +  " points."
+            }
+        else{
+            document.getElementById("answer-paragraph").innerHTML ='Your answer: I think, on average, ' + 'women'.bold() +' scored ' + (difference_choice).toString().bold() +  ' more than'+' men.'.bold()+
+            "In other words, on average, men scored " +(10-difference_choice/2).toString().bold() + " points and women " + (10+difference_choice/2).toString().bold()  +  " points."
+            }
+        }
     else{
-        document.getElementById("answer-paragraph").innerHTML ='Your answer: I think, on average, ' + 'women'.bold() +' correctly answered ' + (difference_choice).toString().bold() +  ' more questions than'+' men.'.bold()+
-        "In other words, on average, men answered " +(10-difference_choice/2).toString().bold() + " questions, women answered " + (10+difference_choice/2).toString().bold()  +  " questions correctly."
-    }
+        if(gender_choice=="men"){
+            document.getElementById("answer-paragraph").innerHTML = 'Your answer: I think, on average, ' + 'men'.bold() +' correctly answered ' + (difference_choice).toString().bold() +  ' more questions than'+' women. '.bold()+
+            "In other words, on average, men answered " +(10+difference_choice/2).toString().bold() + " questions and women " + (10-difference_choice/2).toString().bold()  +  " questions correctly."
+        }
+        else{
+            document.getElementById("answer-paragraph").innerHTML ='Your answer: I think, on average, ' + 'women'.bold() +' correctly answered ' + (difference_choice).toString().bold() +  ' more questions than'+' men.'.bold()+
+            "In other words, on average, men answered " +(10-difference_choice/2).toString().bold() + " questions and women " + (10+difference_choice/2).toString().bold()  +  " questions correctly."
+            }
+        }
 }
 
 
