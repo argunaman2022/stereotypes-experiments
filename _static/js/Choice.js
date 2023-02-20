@@ -62,7 +62,7 @@ function myfunction(){
             "In other words, on average, men scored " +(10+difference_choice/2).toString().bold() + " points and women " + (10-difference_choice/2).toString().bold()  +  " points."
             }
         else{
-            document.getElementById("answer-paragraph").innerHTML ='Your answer: I think, on average, ' + 'women'.bold() +' scored ' + (difference_choice).toString().bold() +  ' more than'+' men.'.bold()+
+            document.getElementById("answer-paragraph").innerHTML ='Your answer: I think, on average, ' + 'women'.bold() +' scored ' + (difference_choice).toString().bold() +  ' more than'+' men. '.bold()+
             "In other words, on average, men scored " +(10-difference_choice/2).toString().bold() + " points and women " + (10+difference_choice/2).toString().bold()  +  " points."
             }
         }
