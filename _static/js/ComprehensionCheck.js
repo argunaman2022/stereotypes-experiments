@@ -20,23 +20,16 @@ window.onload = function(){
 
 function myFunction(){
     document.getElementById("check-answer-button").style.display="inline"
-    percent_choice=document.getElementById('input-field').value //value chosen by the participant on the slider
-    group_choice=document.getElementById('group').value
+    comparison_answer=document.getElementById('comparison-field').value // second answer
+    group_B_answer=document.getElementById('groupB-field').value // first answer
 
     //the following if statement ensures that if the participant has not chosen a group he's prompted to choose one
-    if (group_choice=="default"){
-        document.getElementById("percent_choice").innerHTML = "Choose a value from the dropdown menu to continue"
+    if (group_B_answer=="default" && comparison_answer=="default"){
+        document.getElementById("percent_choice").innerHTML = "Answer the questions to continue."
     }
     else{
-        decimal_percent= percent_choice/100
-        document.getElementById('id_ComprehensionCheck_task').value=decimal_percent
-
-    if(group_choice=="group A"){
-        document.getElementById("percent_choice").innerHTML = 'Your answer: I think, on average, ' + 'Group A'.bold() +' correctly answered ' + (percent_choice).toString().bold() + '%'.bold() + ' more questions than'+' Group B.'.bold()
-    }
-    else{
-        document.getElementById("percent_choice").innerHTML ='Your answer: I think, on average, ' + 'Group B'.bold() +' correctly answered ' + (percent_choice).toString().bold() + '%'.bold() + ' more questions than'+' Group A.'.bold()
-    }
+        document.getElementById("percent_choice").innerHTML = "Your answer: I think, group B answered "+ group_B_answer.toString().bold() + " many questions correctly and group A answered " +
+        comparison_answer.toString().bold() +  " many more questions correctly than to group B."
     }
 }
 
@@ -49,13 +42,13 @@ function checkAnswer(){
     var attempts_left=localStorage.getItem('attempts_left')
     document.getElementById("check-answer-button").style.display="none"
 
-    if (group_choice=="group B" && percent_choice=="30"){
+    if (group_B_answer=="7" && comparison_answer=="6"){
     document.getElementById("answer-validity").innerHTML='Correct!'.bold()
     document.getElementById("next-button").style.display="inline"
     } else {
     attempts_left--
     if (attempts_left<=0){
-    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have no more attempts left.'.bold() + ' Correct answer was: "Group B answered correctly 30% more questions"'
+    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have no more attempts left.'.bold() + ' Correct answer was: "Group B 7 questions correctly so group A answered 6 more than group B"'
     document.getElementById("next-button").style.display="inline"
    }
     else {

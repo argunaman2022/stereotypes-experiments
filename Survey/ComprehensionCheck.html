@@ -6,7 +6,16 @@
 
 <script type="text/javascript" src="{{ static 'js/ComprehensionCheck.js' }}"></script>
 
-<p> To be able to start the study and be eligible for payment you must answer the following question correctly. <strong>You are allowed {{Allowed_number_attempts}} attempts</strong>. After 3 attempts you are excluded from this HIT.</p>
+<p> To be able to start the study and be eligible for payment you must read the following examples and answer the subsequent question correctly. Note that you have two attempts.
+    In all the examples below and comprehension question, assume that there is the same number of people in both groups.
+    <br><br>
+    <strong>Example 1.</strong>  In Task 1, group B performed better than group A: on average, group B answered 10.5 questions correctly while group A answered 9.5 questions correctly.
+    Therefore, taking both groups together, the average person answered 10 questions correctly.</p>
+    <strong>Example 2.</strong>  In Task 2, the average person answered 10 questions correctly. Group A performed better than group B: on average, group A answered 12 questions correctly.
+    This means that group B must have answered only 8 questions correctly, since the average person, taking both groups together, answered 10 questions correctly.</p>
+    <strong>Example 3.</strong>  In Task 2, the average person answered 10 questions correctly. Group A and B did equally well: they both, on average, answered 10 questions correctly.
+    This means that group A answered 0 questions more than group B.</p>
+
 
 {{ include path_task}}
 
@@ -16,20 +25,15 @@
 
 {#This is the div for the input field, i set this initially to be hidden to avoid any anchoring effects#}
 <div id="input-div" class="initially-hidden" style="display:none">
-    I think,
-            <form action="/action_page.php">
-              <select name="group" id="group" oninput="myFunction()">
-                <option value="default">-----</option>
-                <option value="group A">Group A</option>
-                <option value="group B">Group B</option>
-              </select>
-            </form>
-     answered <input type="number" min="0" step="0.01" id="input-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required> %
-     more questions correctly.
+    I think, on average,  group B,
+     answered <input type="number" min="0" step="0.01" id="groupB-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required>
+     questions correctly. I think, on average,  group B,
+     answered <input type="number" min="0" step="0.01" id="comparison-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required>
+     more questions correctly than group A.
     <br>
     <br>
     {#This paragraph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
-    <p id="percent_choice" style="font-size:25px"><strong></strong></p>
+    <p id="percent_choice" style="font-size:25px"></p>
 </div>
 <br>
 
