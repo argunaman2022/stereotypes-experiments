@@ -8,11 +8,10 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 """
 
 
-# todo: think about attention checks
 # todo: hide the debug menu before publishing
 # todo : grant qualification id to avoid repeat takes.
-# todo: remove the codes for comprehension check
 # todo: add a noise measurement per participant: fix the second question and repeat it in the 10th place, the differeince in the difference is taken as noise in decision.
+# todo: run 2 sessions one with the MRT the other with MRT_creative_thinking in tasks
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
