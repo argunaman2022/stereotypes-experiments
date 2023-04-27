@@ -6,14 +6,14 @@
 
 <script type="text/javascript" src="{{ static 'js/ComprehensionCheck.js' }}"></script>
 
-<p> To be able to start the study and be eligible for payment you must read the following examples and answer the subsequent question correctly. Note that you have two attempts.
-    In all the examples below and comprehension question, assume that there is the same number of people in both groups.
+<p> To be able to start the study and be eligible for payment, you must read the following examples and answer the subsequent question correctly. Note that you have <strong>two attempts</strong>.
+    In all the examples below and the comprehension question, assume that there is the same number of people in both groups.
     <br><br>
-    <strong>Example 1.</strong>  In Task 1, group B performed better than group A: on average, group B answered 10.5 questions correctly while group A answered 9.5 questions correctly.
-    Therefore, taking both groups together, the average person answered 10 questions correctly.</p>
-    <strong>Example 2.</strong>  In Task 2, the average person answered 10 questions correctly. Group A performed better than group B: on average, group A answered 12 questions correctly.
+    <strong>Example 1.</strong>  In Task 1, the average person answered 10 questions correctly. Group A performed better than group B: on average, group A answered 12 questions correctly.
     This means that group B must have answered only 8 questions correctly, since the average person, taking both groups together, answered 10 questions correctly.</p>
-    <strong>Example 3.</strong>  In Task 2, the average person answered 10 questions correctly. Group A and B did equally well: they both, on average, answered 10 questions correctly.
+    <strong>Example 2.</strong>  In Task 2, group B performed better than group A: on average, group B answered 10.5 questions correctly while group A answered 9.5 questions correctly.
+    Therefore, taking both groups together, the average person answered 10 questions correctly.</p>
+    <strong>Example 3.</strong>  In Task 3, the average person answered 10 questions correctly. Group A and B did equally well: they both, on average, answered 10 questions correctly.
     This means that group A answered 0 questions more than group B.</p>
 
 
@@ -27,9 +27,9 @@
 <div id="input-div" class="initially-hidden" style="display:none">
     I think, on average,  group B,
      answered <input type="number" min="0" step="0.01" id="groupB-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required>
-     questions correctly. I think, on average,  group B,
+     questions correctly. I think, on average,  group A,
      answered <input type="number" min="0" step="0.01" id="comparison-field" name="input-field" onKeyPress="myFunction()" onKeyUp="myFunction()" maxlength="4" size="1" required>
-     more questions correctly than group A.
+     more questions correctly than group B.
     <br>
     <br>
     {#This paragraph is a description of the player's choice. As soon as a slider choice is made it shows the slide value#}
@@ -38,14 +38,15 @@
 <br>
 
 <div style="display:none">{{ formfields}}</div>
+
 <div id="check-answer-button" style="display:none">
-    <button type="button" class="otree-btn-next btn btn-primary" onclick="checkAnswer()"> Check Answer </button> {# If the answer is incorrect (i.e. != .50) participant is asked to guess again #}
+    {{next_button}}
 </div>
 
 <p id="answer-validity"></p>
 
-<div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
+<!-- <div id="next-button" style="display:none"> {# the next button is initially hidden until the slider is moved to ensure there's no unanswered question #}
     {{ next_button }}
-</div>
+</div> -->
 
 {{ endblock }}

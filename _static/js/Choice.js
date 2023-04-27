@@ -4,7 +4,6 @@ $('html').bind('keypress', function(e) {
       return false;
    }
 })
-
 // Disable mousewheel from changing the input field, make sure to add noscroll class to the input field.
 document.addEventListener("wheel", function(event){
     if(document.activeElement.type === "number" &&
@@ -14,9 +13,8 @@ document.addEventListener("wheel", function(event){
     }
 });
 
-
-
 function myfunction(){
+    // this function is called when the participant interacts with the input field
     let difference_choice=document.getElementById('input-field').value // value chosen by the participant on input field
     let gender_choice=document.getElementById('gender').value  // value chosen by the participant on the dropdown menu
 
@@ -25,7 +23,6 @@ function myfunction(){
     else if(gender_choice == 'women'){
         percent_choice=-difference_choice/(10+difference_choice/2)}
     else {print("error in percent_choice")}
-
 
     let current_task=js_vars.tasks[js_vars.round_number-1] // this is the current task
     if (current_task=='Ball_bucket_task'){
@@ -95,7 +92,6 @@ function funDropdownInput(){
     let difference_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
     let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
 
-    console.log(difference_choice,gender_choice)
     if (gender_choice!="default" && difference_choice!=null){
     myfunction()
     document.getElementById("next-button").style.display="inline"
@@ -103,19 +99,15 @@ function funDropdownInput(){
     else {document.getElementById("next-button").style.display="none"}
 }
 
-
 function funValueInput(){
     let difference_choice=document.getElementById('input-field').value // value chosen by the participant on the dropdown menu
     let gender_choice=document.getElementById('gender').value  // value chosen by the participant on input field
 
     if (gender_choice!="default" && difference_choice!=null){
     myfunction()
-    console.log('check 2')
     document.getElementById("next-button").style.display="inline"
     }
     else {document.getElementById("next-button").style.display="none"}
-
-    // the following if statement ensures that if the participant has not chosen a gender he's prompted to choose one
 }
 
 function myFunctionReady(){

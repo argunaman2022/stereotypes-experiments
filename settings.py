@@ -1,7 +1,7 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    dict(name='survey',app_sequence=['Survey'],num_demo_participants=3)
+    dict(name='survey',app_sequence=['Survey'],num_demo_participants=10)
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
@@ -49,8 +49,12 @@ SESSION_CONFIG_DEFAULTS = dict(
     )
 )
 
-PARTICIPANT_FIELDS = ['shuffled_tasks_incl_Attention_Check', 'payment_relevant_task',  'attempts', 'attention_1', 'attention_2']
-SESSION_FIELDS = []
+PARTICIPANT_FIELDS = ['shuffled_tasks_incl_Attention_Check', 'payment_relevant_task', 
+                      'comprehension_check_1', 'comprehension_check_2', 'attention_1',
+                       'attention_2', 'treatment']
+SESSION_FIELDS = {
+    'quota':{}
+}
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans

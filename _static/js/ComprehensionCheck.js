@@ -5,23 +5,11 @@ $('html').bind('keypress', function(e) {
    }
 })
 
-let Allowed_number_attempts=js_vars.Allowed_number_attempts
-
-window.onload = function(){
-    var attempts_left=localStorage.getItem('attempts_left')
-
-    if(attempts_left==null){
-        localStorage.setItem("attempts_left", Allowed_number_attempts)
-    }
-    console.log(attempts_left)
-}
-
-
-
 function myFunction(){
+    // this function is called when the participant interacts with the 2 input fields
     document.getElementById("check-answer-button").style.display="inline"
-    comparison_answer=document.getElementById('comparison-field').value // second answer
-    group_B_answer=document.getElementById('groupB-field').value // first answer
+    comparison_answer=document.getElementById('comparison-field').value // second field
+    group_B_answer=document.getElementById('groupB-field').value // first field
 
     //the following if statement ensures that if the participant has not chosen a group he's prompted to choose one
     if (group_B_answer=="default" && comparison_answer=="default"){
@@ -31,31 +19,18 @@ function myFunction(){
         document.getElementById("percent_choice").innerHTML = "Your answer: I think, group B answered "+ group_B_answer.toString().bold() + " many questions correctly and group A answered " +
         comparison_answer.toString().bold() +  " many more questions correctly than to group B."
     }
+    
+    // if the participant answers the question correctly we assign 1 to the hidden input field, else 0
+    if (comparison_answer == '6' && group_B_answer == '7'){
+        document.getElementById('id_ComprehensionCheck_task').value = '1'
+        console.log(document.getElementById('id_ComprehensionCheck_task').value)
+    } else {document.getElementById('id_ComprehensionCheck_task').value = '0'
+        console.log(document.getElementById('id_ComprehensionCheck_task').value)
+    }
 }
 
 function myFunctionReady(){
+    // this function is called when the participant clicks on the ready-button
     document.getElementById("ready-button").style.display="none" //hide the ready-button
     document.getElementById("input-div").style.display="inline" //show the input-div
 }
-
-function checkAnswer(){
-    var attempts_left=localStorage.getItem('attempts_left')
-    document.getElementById("check-answer-button").style.display="none"
-
-    if (group_B_answer=="7" && comparison_answer=="6"){
-    document.getElementById("answer-validity").innerHTML='Correct!'.bold()
-    document.getElementById("next-button").style.display="inline"
-    } else {
-    attempts_left--
-    if (attempts_left<=0){
-    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have no more attempts left.'.bold() + ' Correct answer was: "Group B 7 questions correctly so group A answered 6 more than group B"'
-    document.getElementById("next-button").style.display="inline"
-   }
-    else {
-    document.getElementById("answer-validity").innerHTML='Incorrect Answer! You have '.bold() + attempts_left.toString().bold() + ' more attempt(s) left. Please try again'.bold()
-    }
-    }
-    localStorage.setItem("attempts_left", attempts_left)
-    document.getElementById("id_attempts").value=attempts_left
-}
-
