@@ -244,7 +244,7 @@ class ComprehensionCheck_2(Page):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
         if player.ComprehensionCheck_task == 0:
-            print('before decrement' + player.subsession.quota)
+            print('before decrement' + player.subsession.session.quota)
             decrement_quota(player)
             #TODO: check that this works properly
             print('after decrementation' + player.subsession.quota)
