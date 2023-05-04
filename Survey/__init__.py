@@ -41,18 +41,18 @@ def creating_session(subsession: Subsession):
     }
     
     for p in subsession.get_players():
-        'initialize the comprehension and attention checks to 1 i.e. True'
+        'initialize the comprehension and attention checks to 1 i.e. True, theyll be set to 0 if participant fails them.'
         p.participant.comprehension_check_1, p.participant.comprehension_check_2 = 1, 1
         p.participant.attention_2, p.participant.attention_1 = 1, 1
 
-        
 class Group(BaseGroup):
     pass
 
 class Player(BasePlayer):
     # demographics
     age = models.IntegerField(min=18, max=99)
-    gender = models.StringField(choices=['Male', 'Female', 'Transgender female', 'Transgender male', 'Non-binary'])#TODO: add quotas
+    #TODO: add quotas
+    gender = models.StringField(choices=['Male', 'Female', 'Transgender female', 'Transgender male', 'Non-binary'])
     race = models.StringField(
         choices=['White', 'Black or African American', 'American Indian or Alaska Native', 'Asian',
                  'Native Hawaiian or Other Pacific Islander', 'Other'])
@@ -70,18 +70,19 @@ class Player(BasePlayer):
     education = models.StringField(label="Educational Attainment",
                                    choices=["Less than High School", "High School Graduate",
                                             "Some College/Associate Degree", "Bachelor's Degree", "Advanced Degree"])
-    # comprehension check
+    
+    # whether they clicked on the detailed payment explanation
     payment_checked = models.StringField(choices=['Read', 'NotRead'], initial='NotRead')
     # SURVEY - 11 questions = 10 + 1 Attention_Check
-    ComprehensionCheck_task = models.IntegerField(initial=1)
+    ComprehensionCheck_task = models.IntegerField(initial=1) #1==True
     # set initially to true, will turn to false if player fails the attention check, make sure to create the same field in the participant level.
-    Attention_Check_1 = models.IntegerField(initial=1)
+    Attention_Check_1 = models.IntegerField(initial=1) #1==True
     Attention_Check_2 = models.IntegerField(initial=1)
 
     @staticmethod
     def defined_min():
         return -math.inf
-
+    # 10 survey questions (remember: 10 survey questions, 2 attention checks in the choice Page.)
     NV_task = models.FloatField(min=defined_min())
     Maze_task = models.FloatField(min=defined_min())
     Count_letters_task = models.FloatField(min=defined_min())
@@ -94,41 +95,47 @@ class Player(BasePlayer):
     MRT_task = models.FloatField(min=defined_min())
 
 
-# Functions and variables go here
+'Functions and variables go here'
 
-def every_day(treatment, player):
-    if treatment == 'MRT':
-        shuffled_tasks = tasks_excl_attention
-    else:
-        shuffled_tasks = tasks_excl_attention_creative
-    random.shuffle(shuffled_tasks)
+def every_day(player: Player, treatment):
+
     '''
-    in this function to each participant i assign a random task order depending on his treatment
+    in this function to each participant i assign a random task order depending on his treatment 
+                        as well as chosing the payoff relevant task
     1. make sure to create the "shuffled_tasks_incl_Attention_Check" in the settings.py participant field
     2. shuffle the tasks before assigning the participant
     3. Insert the attention check page in the C.Attention_Check - 1 place (3rd page for C.Attention_Check=3)
     4. make sure this code is only run in the first round. alternatively one can set a seed for shuffling.
     5. IMPORTANT! MAKE SURE TO USE player.participant.shuffled_tasks_incl_Attention_Check instead of tasks
     '''
+
+    if treatment == 'MRT':
+        shuffled_tasks = tasks_excl_attention
+    else:
+        shuffled_tasks = tasks_excl_attention_creative
+    random.shuffle(shuffled_tasks)
+
     # randomly choose a task to be payment relevant and assign to the participant field from the list of 10 tasks.
     player.participant.payment_relevant_task = random.choice(shuffled_tasks)  
-    if 'Attention_Check' not in shuffled_tasks:
-        shuffled_tasks = shuffled_tasks[0:C.Attention_Check_1_Place - 1]+ ['Attention_Check_1'] +shuffled_tasks[C.Attention_Check_1_Place - 1:C.Attention_Check_2_Place - 1] + ['Attention_Check_2'] + shuffled_tasks[C.Attention_Check_2_Place - 1:]
-    player.participant.shuffled_tasks_incl_Attention_Check = shuffled_tasks
+    
+    player.participant.shuffled_tasks_incl_Attention_Check = (shuffled_tasks[0:C.Attention_Check_1_Place - 1]+ ['Attention_Check_1'] +
+                                                             shuffled_tasks[C.Attention_Check_1_Place - 1:C.Attention_Check_2_Place - 1] + 
+                                                             ['Attention_Check_2'] + shuffled_tasks[C.Attention_Check_2_Place - 1:])
 
 def assign_quota(gender, player):
     '''
-    here we assign the participant to a proper treatment:
+    here we assign the participant to a proper treatment: 
     1. we have 4 treatments: (creative, mrt) x (male, female)
-    2. non binaries and transgendas are assigned to one of the 4 randomly 
-    3. binaries are assigned to one of the two randomly given both quotas are below C.quota_size 
+    2. non binaries and transgendas are assigned to one of the 4 treatments randomly given quota is empty
+    3. binaries are assigned to one of the two treatments randomly given both quotas are below C.quota_size 
         and these quotas are incremented.
         3.1 if the C.quota_size is full for both, they are kicked
         3.1 if C.quota_size is full for one but not the other s/he is assigned to the quota.
     '''
     if gender in ['Female', 'Male']:
+        # this if statement checks whether both quotas are not full
         if (player.session.quota[f"quota_{gender}_Creative"] < C.Quota_size 
-            and player.session.quota[f"quota_{gender}_Creative"] < C.Quota_size):
+            and player.session.quota[f"quota_{gender}_MRT"] < C.Quota_size):
             assigned_treatment = random.choice(['MRT', 'Creative'])
         elif  player.session.quota[f"quota_{gender}_Creative"] < C.Quota_size:
             assigned_treatment = 'Creative'
@@ -136,16 +143,19 @@ def assign_quota(gender, player):
             assigned_treatment = 'MRT'
         else: 
             assigned_treatment = 'QUOTA_FULL'
-        player.session.quota[f"quota_{gender}_{assigned_treatment}"] += 1
+        
+        if assigned_treatment is not 'QUOTA_FULL':
+            'increment the quotas if the participant is assigned to a quota and is binary'
+            player.session.quota[f"quota_{gender}_{assigned_treatment}"] += 1
     else:
+        #i.e. if they're non-binary
         assigned_treatment = random.choice(['MRT', 'Creative'])       
-    
+    #store this in the participant level
     player.participant.treatment = assigned_treatment
 
 def decrement_quota(player):
     '''
-    decrements quota the participant belonged to
-    in case he fails a comprehension or attention check
+    decrements quota the participant belonged to in case he fails a comprehension or attention check
     '''
     gender = player.gender
     assigned_treatment = player.participant.treatment
@@ -159,6 +169,7 @@ tasks_excl_attention = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzz
 
 tasks_excl_attention_creative = tasks_excl_attention + ['MRT_task_creative']
 tasks_excl_attention_creative.remove('MRT_task')
+
 # Dictionary of true score differences between men and women to be used to calculate payoffs. Positive x implies men answered x percentage points more. Manually coded
 true_difference_list = {
     'ComprehensionCheck_task': 0.5,
@@ -184,27 +195,27 @@ class Demographics(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
-            assign_quota(player.gender, player)
+            assign_quota(player.gender, player) #assigns the participant to a quota and treatment
+            every_day(player, player.participant.treatment) # depending on treatment shuffle his tasks
                 
 
 class ComprehensionCheck_1(Page):
     '''
     1. first the participant goes through comprehension check 1 page. if he fails this page,
-    2. then he is shown the same page again in comprehension check 2 page. if he fails this again he is out!
+       then he is shown the same page again in comprehension check 2 page. if he fails this again he is out!
     '''
     form_model = 'player'
     form_fields = ['ComprehensionCheck_task']
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1 and player.participant.treatment != 'QUOTA_FULL'
+        return player.round_number == 1 and player.participant.treatment is not 'QUOTA_FULL'
 
     @staticmethod
     def vars_for_template(player: Player):
         return {
             'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
         }
-
     
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
@@ -212,7 +223,7 @@ class ComprehensionCheck_1(Page):
 
 class ComprehensionCheck_2(Page):
     '''
-    1. second comprehension check
+    1. the second comprehension check in case the participant fails the first one i.e his second try
     '''
     form_model = 'player'
     form_fields = ['ComprehensionCheck_task']
@@ -232,10 +243,12 @@ class ComprehensionCheck_2(Page):
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
-        if theyve failed:
+        if player.ComprehensionCheck_task == 0:
+            print('before decrement' + player.subsession.quota)
             decrement_quota(player)
-
-
+            #TODO: check that this works properly
+            print('after decrementation' + player.subsession.quota)
+            
 class Introduction(Page):
     form_model = 'player'
     form_fields = ['payment_checked']
@@ -244,7 +257,6 @@ class Introduction(Page):
     def is_displayed(player: Player):
         return (player.participant.comprehension_check_2 == 1 and player.round_number == 1 
                 and player.participant.treatment != 'QUOTA_FULL')
-
 
 class Choice(Page):
     '''
@@ -291,10 +303,11 @@ class Choice(Page):
         We randomly choose this task and store it on the participant field 'payment_relevant_task'.
         Then, we update the participant's payoff using the following function bonus payment = max(C.Max_bonus_payment - C.Bonus_multiplier* abs(true_value-participant's answer),0). total payment = bonus payment + completion fee
         '''
-        participant = player.participant  # get the participant
-
+        participant = player.participant 
+        
+        #current task
         task = participant.shuffled_tasks_incl_Attention_Check[
-            player.round_number - 1]  # get the current task name depending on round number
+            player.round_number - 1]  
         if task == "Attention_Check_1":
             players_attention = getattr(player, task)  # false if they failed the Attention_Check
             participant.attention_1 = players_attention
@@ -309,14 +322,19 @@ class Choice(Page):
             print(
                 f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn {C.Participation_fee} + max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*{C.Bonus_multiplier})={participant.payoff} USD in total.")
 
-        if player.round_number == C.NUM_ROUNDS and participant.attention_1 == 0 or participant.attention_2 == 0:
-            # set the participant payoff to 0 if he has failed any of the attention checks.
+        if player.round_number == C.NUM_ROUNDS and (participant.attention_1 == 0 or participant.attention_2 == 0
+                                                    or participant.comprehension_check_2 == 0):
+            # set the participant payoff to 0 if he has failed any of the attention checks or comprehension check.
             participant.payoff = 0
-
+            #TODO: check that the payoffs work
+            
+#TODO: dont forget to delete print statements.
 class Results(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS & player.participant.comprehension_check_2 == 1 & player.participant.attention_1 == 1 & player.participant.attention_2 == 1
+        return (player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 1 and 
+                player.participant.attention_1 == 1 and player.participant.attention_2 == 1 and 
+                player.participant.treatment is not 'QUOTA_FULL')
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -326,27 +344,16 @@ class Results(Page):
 
         return ({'participation_fee': participation_fee, 'bonus_payment': bonus_payment})
 
-
 class Results_failed_comprehension(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 0
 
-    def before_next_page(player: Player, timeout_happened):
-        '''
-        Sets the participant completion fee to 0 if the participant failed the comprehension check
-        '''
-        participant = player.participant  # get the participant
-
-        if player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 0:
-            participant.payoff = 0
-
-
 class Results_failed_attention(Page):
     @staticmethod
     def is_displayed(player: Player):
-        failed_attention = player.participant.attention_1 == 0 or player.participant.attention_2 == 0
-        return player.round_number == C.NUM_ROUNDS and failed_attention
+        return player.round_number == C.NUM_ROUNDS and (player.participant.attention_1 == 0 or
+                                                        player.participant.attention_2 == 0)
 
 class Quota_Full(Page):
     @staticmethod
