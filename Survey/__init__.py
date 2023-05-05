@@ -52,7 +52,7 @@ class Player(BasePlayer):
     # demographics
     age = models.IntegerField(min=18, max=99)
     #TODO: add quotas
-    gender = models.StringField(choices=['Male', 'Female', 'Transgender female', 'Transgender male', 'Non-binary'])
+    gender = models.StringField(choices=['Male', 'Female', 'Transgender female', 'Transgender male', 'Non binary'])
     race = models.StringField(
         choices=['White', 'Black or African American', 'American Indian or Alaska Native', 'Asian',
                  'Native Hawaiian or Other Pacific Islander', 'Other'])
@@ -93,6 +93,7 @@ class Player(BasePlayer):
     Word_in_word_task = models.FloatField(min=defined_min())
     Numbers_in_numbers_task = models.FloatField(min=defined_min())
     MRT_task = models.FloatField(min=defined_min())
+    MRT_task_creative = models.FloatField(min=defined_min())
 
 
 'Functions and variables go here'
@@ -159,7 +160,8 @@ def decrement_quota(player):
     '''
     gender = player.gender
     assigned_treatment = player.participant.treatment
-    player.session.quota[f"quota_{gender}_{assigned_treatment}"] -= 1
+    if gender in ['Male', 'Female']:
+        player.session.quota[f"quota_{gender}_{assigned_treatment}"] -= 1
     #TODO: check if this works.
 
 # This is the list of tasks excluding the attention check. Note that in settings.py on the participant level shuffled_tasks_incl_Attention_Check is stored.
@@ -168,6 +170,7 @@ tasks_excl_attention = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzz
                         'MRT_task']
 
 tasks_excl_attention_creative = tasks_excl_attention + ['MRT_task_creative']
+print(tasks_excl_attention_creative) #TODO: delete print statements
 tasks_excl_attention_creative.remove('MRT_task')
 
 # Dictionary of true score differences between men and women to be used to calculate payoffs. Positive x implies men answered x percentage points more. Manually coded
@@ -182,7 +185,8 @@ true_difference_list = {
     'Ball_bucket_task': 0,
     'Word_in_word_task': 0,
     'Numbers_in_numbers_task': 0,
-    'MRT_task': 0.15
+    'MRT_task': 0.15,
+    'MRT_task_creative': 0.15
 }
 
 class Demographics(Page):
@@ -244,10 +248,10 @@ class ComprehensionCheck_2(Page):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
         if player.ComprehensionCheck_task == 0:
-            print('before decrement' + player.subsession.session.quota)
+            print(f"before decrement{str(player.subsession.session.quota)}")
             decrement_quota(player)
             #TODO: check that this works properly
-            print('after decrementation' + player.subsession.quota)
+            print(f"after decrement{str(player.subsession.session.quota)}")
             
 class Introduction(Page):
     form_model = 'player'

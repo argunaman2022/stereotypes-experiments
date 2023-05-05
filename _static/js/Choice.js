@@ -15,6 +15,8 @@ document.addEventListener("wheel", function(event){
 
 function myfunction(){
     // this function is called when the participant interacts with the input field
+    // It gets for each choice page the choice of the person and sets the value to the corresponding html element
+
     let difference_choice=document.getElementById('input-field').value // value chosen by the participant on input field
     let gender_choice=document.getElementById('gender').value  // value chosen by the participant on the dropdown menu
 
@@ -23,8 +25,9 @@ function myfunction(){
     else if(gender_choice == 'women'){
         percent_choice=-difference_choice/(10+difference_choice/2)}
     else {print("error in percent_choice")}
-
+    
     let current_task=js_vars.tasks[js_vars.round_number-1] // this is the current task
+
     if (current_task=='Ball_bucket_task'){
         document.getElementById('id_Ball_bucket_task').value=percent_choice
     } else if (current_task=='Count_letters_task'){
@@ -33,6 +36,8 @@ function myfunction(){
             document.getElementById('id_Maze_task').value=percent_choice
     } else if (current_task=='MRT_task'){
             document.getElementById('id_MRT_task').value=percent_choice
+    } else if (current_task=='MRT_task_creative'){ 
+        document.getElementById('id_MRT_task_creative').value=percent_choice
     } else if (current_task=='Numbers_in_numbers_task'){
             document.getElementById('id_Numbers_in_numbers_task').value=percent_choice
     } else if (current_task=='NV_task'){
