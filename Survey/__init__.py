@@ -7,11 +7,7 @@ import time
 doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 """
-#TODO: add back demographics to the page order
-#TODO: hide the debug menu before publishing
 #TODO: grant qualification id to avoid repeat takes.
-#TODO: run 2 sessions one with the MRT the other with MRT_creative_thinking in tasks
-#TODO: run bots
 # TODO: when running small session adjust quota size.
 
 #%%
@@ -25,8 +21,7 @@ class C(BaseConstants):
     Max_bonus_payment = 2
     Bonus_multiplier = 4
     Quota_size = 1 #quota size
-    Max_time_allowed = 20 #TODO: delete this line and uncomment the next
-    # Max_time_allowed = 3600 #1 hour
+    Max_time_allowed = 3600 #1 hour
     Attention_Check_1_Place = 1  # on which page should the attention 1 check appear
     Attention_Check_2_Place = 5  # on which page should the attention 2 check appear
 
@@ -216,7 +211,6 @@ class Introduction(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         player.participant.expiry = time.time() + C.Max_time_allowed
-        print(player.participant.expiry, time.time())
 
 
 class ComprehensionCheck_1(Page):
@@ -266,7 +260,6 @@ class ComprehensionCheck_2(Page):
         return {
             'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
         }
-#TODO: add timeouts
 #TODO: delete all print statements
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
@@ -348,8 +341,8 @@ class Choice(Page):
             true_difference = true_difference_list[task]  # get the true difference from the trie_difference_list
             participant.payoff = C.Participation_fee + max(0, C.Max_bonus_payment - abs(
                 true_difference - players_answer) * C.Bonus_multiplier)  # save the participant payoff in its field, note that payoff doesnt include the part. fee
-            print(
-                f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn {C.Participation_fee} + max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*{C.Bonus_multiplier})={participant.payoff} USD in total.")
+            # print(
+            #     f"{participant.payment_relevant_task} was chosen for payment. To the task {task} you answered {players_answer} since the true value is {true_difference} you earn {C.Participation_fee} + max(0,({C.Max_bonus_payment}-abs({true_difference} - {players_answer})*{C.Bonus_multiplier})={participant.payoff} USD in total.")
 
         if player.round_number == C.NUM_ROUNDS and (participant.attention_1 == 0 or participant.attention_2 == 0
                                                     or participant.comprehension_check_2 == 0):
@@ -357,7 +350,6 @@ class Choice(Page):
             participant.payoff = 0
             #TODO: check that the payoffs work
             
-#TODO: dont forget to delete print statements.
 class Results(Page):
     @staticmethod
     def is_displayed(player: Player):
