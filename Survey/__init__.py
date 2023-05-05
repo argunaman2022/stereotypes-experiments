@@ -44,6 +44,7 @@ def creating_session(subsession: Subsession):
         'initialize the comprehension and attention checks to 1 i.e. True, theyll be set to 0 if participant fails them.'
         p.participant.comprehension_check_1, p.participant.comprehension_check_2 = 1, 1
         p.participant.attention_2, p.participant.attention_1 = 1, 1
+        p.gender = 'default' #need to set the gender to default so i can access and edit it later...
 
 class Group(BaseGroup):
     pass
@@ -199,6 +200,7 @@ class Demographics(Page):
         if player.round_number == 1:
             assign_quota(player.gender, player) #assigns the participant to a quota and treatment
             every_day(player, player.participant.treatment) # depending on treatment shuffle his tasks
+            print(player.participant.vars)
             player.participant.gender = player.gender
             print(player.participant.gender)
                 

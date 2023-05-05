@@ -51,7 +51,7 @@ SESSION_CONFIG_DEFAULTS = dict(
 
 PARTICIPANT_FIELDS = ['shuffled_tasks_incl_Attention_Check', 'payment_relevant_task', 
                       'comprehension_check_1', 'comprehension_check_2', 'attention_1',
-                       'attention_2', 'treatment', 'expiry']
+                       'attention_2', 'treatment', 'gender' ,'expiry']
 SESSION_FIELDS = {
     'quota':{}
 }
