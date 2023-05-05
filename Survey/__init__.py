@@ -158,11 +158,10 @@ def decrement_quota(player):
     '''
     decrements quota the participant belonged to in case he fails a comprehension or attention check
     '''
-    gender = player.gender
+    gender = player.participant.gender
     assigned_treatment = player.participant.treatment
     if gender in ['Male', 'Female']:
         player.session.quota[f"quota_{gender}_{assigned_treatment}"] -= 1
-    #TODO: check if this works.
 
 # This is the list of tasks excluding the attention check. Note that in settings.py on the participant level shuffled_tasks_incl_Attention_Check is stored.
 tasks_excl_attention = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzzle_task', 'Word_order_task',
@@ -170,7 +169,6 @@ tasks_excl_attention = ['NV_task', 'Maze_task', 'Count_letters_task', 'Word_puzz
                         'MRT_task']
 
 tasks_excl_attention_creative = tasks_excl_attention + ['MRT_task_creative']
-print(tasks_excl_attention_creative) #TODO: delete print statements
 tasks_excl_attention_creative.remove('MRT_task')
 
 # Dictionary of true score differences between men and women to be used to calculate payoffs. Positive x implies men answered x percentage points more. Manually coded
@@ -201,6 +199,8 @@ class Demographics(Page):
         if player.round_number == 1:
             assign_quota(player.gender, player) #assigns the participant to a quota and treatment
             every_day(player, player.participant.treatment) # depending on treatment shuffle his tasks
+            player.participant.gender = player.gender
+            print(player.participant.gender)
                 
 
 class ComprehensionCheck_1(Page):
@@ -243,7 +243,7 @@ class ComprehensionCheck_2(Page):
         return {
             'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
         }
-
+#TODO: add timeouts
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
@@ -315,9 +315,13 @@ class Choice(Page):
         if task == "Attention_Check_1":
             players_attention = getattr(player, task)  # false if they failed the Attention_Check
             participant.attention_1 = players_attention
+            if players_attention == 0:
+                decrement_quota(player)
         elif task == "Attention_Check_2":
             players_attention = getattr(player, task)  # false if they failed the Attention_Check
             participant.attention_2 = players_attention
+            if players_attention == 0:
+                decrement_quota(player)
         elif task == participant.payment_relevant_task:
             players_answer = getattr(player, task)  # player's answer is stored in player.task field
             true_difference = true_difference_list[task]  # get the true difference from the trie_difference_list
@@ -362,7 +366,7 @@ class Results_failed_attention(Page):
 class Quota_Full(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.participant.treatment == 'QUOTA_FULL'
+        return player.round_number == C.NUM_ROUNDS and player.participant.treatment == 'QUOTA_FULL'
 
 
 page_sequence = [ Demographics, Introduction, ComprehensionCheck_1, ComprehensionCheck_2,  
