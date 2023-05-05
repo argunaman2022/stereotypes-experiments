@@ -2,6 +2,7 @@ from otree.api import *
 import itertools
 import random
 import math
+import time
 
 doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
@@ -13,6 +14,7 @@ Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 #TODO: run bots
 # TODO: when running small session adjust quota size.
 
+#%%
 class C(BaseConstants):
     NAME_IN_URL = 'Survey'
     PLAYERS_PER_GROUP = None
@@ -23,7 +25,8 @@ class C(BaseConstants):
     Max_bonus_payment = 2
     Bonus_multiplier = 4
     Quota_size = 1 #quota size
-
+    Max_time_allowed = 20 #TODO: delete this line and uncomment the next
+    # Max_time_allowed = 3600 #1 hour
     Attention_Check_1_Place = 1  # on which page should the attention 1 check appear
     Attention_Check_2_Place = 5  # on which page should the attention 2 check appear
 
@@ -41,18 +44,19 @@ def creating_session(subsession: Subsession):
     }
     
     for p in subsession.get_players():
-        'initialize the comprehension and attention checks to 1 i.e. True, theyll be set to 0 if participant fails them.'
+        #initialize the comprehension and attention checks to 1 i.e. True, theyll be set to 0 if participant fails them.
         p.participant.comprehension_check_1, p.participant.comprehension_check_2 = 1, 1
         p.participant.attention_2, p.participant.attention_1 = 1, 1
+        
         p.gender = 'default' #need to set the gender to default so i can access and edit it later...
+        p.participant.expiry = 0 #set the expiry to 0 so i can access and edit it later...
+
 
 class Group(BaseGroup):
     pass
 
 class Player(BasePlayer):
-    # demographics
     age = models.IntegerField(min=18, max=99)
-    #TODO: add quotas
     gender = models.StringField(choices=['Male', 'Female', 'Transgender female', 'Transgender male', 'Non binary'])
     race = models.StringField(
         choices=['White', 'Black or African American', 'American Indian or Alaska Native', 'Asian',
@@ -96,9 +100,7 @@ class Player(BasePlayer):
     MRT_task = models.FloatField(min=defined_min())
     MRT_task_creative = models.FloatField(min=defined_min())
 
-
-'Functions and variables go here'
-
+#%% FUNCTIONS AND VARIABLES
 def every_day(player: Player, treatment):
 
     '''
@@ -187,7 +189,7 @@ true_difference_list = {
     'MRT_task': 0.15,
     'MRT_task_creative': 0.15
 }
-
+#%% Classes
 class Demographics(Page):
     form_model = 'player'
     form_fields = ['gender', 'age', 'race', 'education', 'state']
@@ -200,10 +202,22 @@ class Demographics(Page):
         if player.round_number == 1:
             assign_quota(player.gender, player) #assigns the participant to a quota and treatment
             every_day(player, player.participant.treatment) # depending on treatment shuffle his tasks
-            print(player.participant.vars)
-            player.participant.gender = player.gender
-            print(player.participant.gender)
-                
+            player.participant.gender = player.gender              
+
+class Introduction(Page):
+    form_model = 'player'
+    form_fields = ['payment_checked']
+       
+    @staticmethod
+    def is_displayed(player: Player):
+        return (player.participant.comprehension_check_2 == 1 and player.round_number == 1 
+                and player.participant.treatment != 'QUOTA_FULL')
+        
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        player.participant.expiry = time.time() + C.Max_time_allowed
+        print(player.participant.expiry, time.time())
+
 
 class ComprehensionCheck_1(Page):
     '''
@@ -212,7 +226,11 @@ class ComprehensionCheck_1(Page):
     '''
     form_model = 'player'
     form_fields = ['ComprehensionCheck_task']
+    
+    def get_timeout_seconds(player):
+        return player.participant.expiry - time.time()
 
+    
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1 and player.participant.treatment is not 'QUOTA_FULL'
@@ -234,6 +252,9 @@ class ComprehensionCheck_2(Page):
     form_model = 'player'
     form_fields = ['ComprehensionCheck_task']
 
+    def get_timeout_seconds(player):
+        return player.participant.expiry - time.time()
+    
     @staticmethod
     def is_displayed(player: Player):
         participant=player.participant
@@ -246,6 +267,7 @@ class ComprehensionCheck_2(Page):
             'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
         }
 #TODO: add timeouts
+#TODO: delete all print statements
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
@@ -255,14 +277,6 @@ class ComprehensionCheck_2(Page):
             #TODO: check that this works properly
             print(f"after decrement{str(player.subsession.session.quota)}")
             
-class Introduction(Page):
-    form_model = 'player'
-    form_fields = ['payment_checked']
-    
-    @staticmethod
-    def is_displayed(player: Player):
-        return (player.participant.comprehension_check_2 == 1 and player.round_number == 1 
-                and player.participant.treatment != 'QUOTA_FULL')
 
 class Choice(Page):
     '''
@@ -272,6 +286,9 @@ class Choice(Page):
     '''
     form_model = 'player'
 
+    def get_timeout_seconds(player):
+        return player.participant.expiry - time.time()
+
     @staticmethod
     def get_form_fields(player: Player):
         'dynamically setting the formfield to depend on the round number.'
@@ -279,9 +296,9 @@ class Choice(Page):
         return [current_task]
 
     def is_displayed(player: Player):
-        return (player.participant.attention_1 == 1 & player.participant.attention_2 == 1 
+        return (player.participant.attention_1 == 1 and player.participant.attention_2 == 1 
                 and player.participant.comprehension_check_2 == 1
-                and player.participant.treatment != 'QUOTA_FULL')
+                and player.participant.treatment != 'QUOTA_FULL' and player.participant.expiry > time.time())
 
     @staticmethod
     def vars_for_template(player: Player, tasks_path=C.Tasks_path):
@@ -310,6 +327,8 @@ class Choice(Page):
         Then, we update the participant's payoff using the following function bonus payment = max(C.Max_bonus_payment - C.Bonus_multiplier* abs(true_value-participant's answer),0). total payment = bonus payment + completion fee
         '''
         participant = player.participant 
+        
+        
         
         #current task
         task = participant.shuffled_tasks_incl_Attention_Check[
@@ -344,7 +363,7 @@ class Results(Page):
     def is_displayed(player: Player):
         return (player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 1 and 
                 player.participant.attention_1 == 1 and player.participant.attention_2 == 1 and 
-                player.participant.treatment is not 'QUOTA_FULL')
+                player.participant.treatment is not 'QUOTA_FULL' and player.participant.expiry > time.time())
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -357,20 +376,25 @@ class Results(Page):
 class Results_failed_comprehension(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 0
+        return player.round_number == C.NUM_ROUNDS and player.participant.comprehension_check_2 == 0 
 
 class Results_failed_attention(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS and (player.participant.attention_1 == 0 or
-                                                        player.participant.attention_2 == 0)
+        return (player.round_number == C.NUM_ROUNDS and  player.participant.expiry > time.time() and 
+                player.participant.attention_1 == 0 or player.participant.attention_2 == 0)
 
 class Quota_Full(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == C.NUM_ROUNDS and player.participant.treatment == 'QUOTA_FULL'
+    
+class TimeOut(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS and player.participant.treatment != 'QUOTA_FULL' and player.participant.expiry < time.time()
 
 
 page_sequence = [ Demographics, Introduction, ComprehensionCheck_1, ComprehensionCheck_2,  
                   Choice, Results, Results_failed_attention,
-                  Results_failed_comprehension, Quota_Full]
+                  Results_failed_comprehension, Quota_Full, TimeOut]
