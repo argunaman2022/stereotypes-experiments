@@ -8,7 +8,10 @@ doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 """
 #TODO: grant qualification id to avoid repeat takes.
-# TODO: when running small session adjust quota size.
+#TODO: when running small session adjust quota size.
+#TODO: delete all print statements
+#TODO: check if works on all browsers and mobile.
+
 
 #%%
 class C(BaseConstants):
@@ -260,15 +263,13 @@ class ComprehensionCheck_2(Page):
         return {
             'path_task': C.Tasks_path + 'ComprehensionCheck_task.html',
         }
-#TODO: delete all print statements
     def before_next_page(player: Player, timeout_happened):
         if player.round_number == 1:
             player.participant.comprehension_check_2 = player.ComprehensionCheck_task
         if player.ComprehensionCheck_task == 0:
-            print(f"before decrement{str(player.subsession.session.quota)}")
+            # print(f"before decrement{str(player.subsession.session.quota)}")
             decrement_quota(player)
-            #TODO: check that this works properly
-            print(f"after decrement{str(player.subsession.session.quota)}")
+            # print(f"after decrement{str(player.subsession.session.quota)}")
             
 
 class Choice(Page):
@@ -348,7 +349,6 @@ class Choice(Page):
                                                     or participant.comprehension_check_2 == 0):
             # set the participant payoff to 0 if he has failed any of the attention checks or comprehension check.
             participant.payoff = 0
-            #TODO: check that the payoffs work
             
 class Results(Page):
     @staticmethod

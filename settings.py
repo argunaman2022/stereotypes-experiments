@@ -12,14 +12,15 @@ SESSION_CONFIGS = [
 SESSION_CONFIG_DEFAULTS = dict(
     #NOTE: our participation fee is hardcoded into our bonus payment so we can exclude those who fail the comprehension check from receiving anything.
     real_world_currency_per_point=1.00, participation_fee=0, doc="",
-    mturk_hit_settings=dict( #todo: where do i specify completion code?
+    mturk_hit_settings=dict( 
+        #TODO: where do i specify completion code?
         keywords='bonus, study',
-        #todo: change title
-        title='An academic survey', #todo: work on title if needbe
-        #todo: work on study desc.
+        #TODO: change title
+        title='An academic survey',
+        #TODO: work on study desc.
         description=''' 
-        In this study you will be asked 10 survey questions. In each question your task is to guess performance of past study participants.
-        You will be paid a completion fee as well as a bonus fee which depends on how close your answers are to the true values.
+        In this study you will be asked 12 survey questions. In each question your task is to guess the performance of past study participants.
+        You will be paid a completion reward as well as a bonus payment which depends on how close your answers are to the true values.
         ''',
         frame_height=500,
         template='global/mturk_template.html',
@@ -38,14 +39,19 @@ SESSION_CONFIG_DEFAULTS = dict(
             'Comparator': "GreaterThanOrEqualTo",
             'IntegerValues': [500]
         },
-        # At least 95% of HITs approved
+        # At least 97% of HITs approved
         {
             'QualificationTypeId': "000000000000000000L0",
             'Comparator': "GreaterThanOrEqualTo",
             'IntegerValues': [97]
-        }
-        ]
-        # grant_qualification_id='YOUR_QUALIFICATION_ID_HERE', # to prevent retakes #todo: learn how to do this
+        }, 
+        # retakes not allowed
+        {
+            'QualificationTypeId': "3NMEEDRLDFUO0ACR7GC8VZBKIQJQP5",
+            'Comparator': "DoesNotExist",
+        },
+        ],
+        grant_qualification_id='3NMEEDRLDFUO0ACR7GC8VZBKIQJQP5'
     )
 )
 
