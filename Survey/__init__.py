@@ -7,11 +7,7 @@ import time
 doc = """
 Survey for Mturk for the stereotypes project. Michael Hilweg, Argun Aman 2023
 """
-#TODO: grant qualification id to avoid repeat takes.
 #TODO: when running small session adjust quota size.
-#TODO: delete all print statements
-#TODO: check if works on all browsers and mobile.
-
 
 #%%
 class C(BaseConstants):

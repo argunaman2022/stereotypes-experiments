@@ -1,7 +1,7 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    dict(name='survey',app_sequence=['Survey'],num_demo_participants=100)
+    dict(name='survey',app_sequence=['Survey'],num_demo_participants=10)
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
@@ -13,11 +13,8 @@ SESSION_CONFIG_DEFAULTS = dict(
     #NOTE: our participation fee is hardcoded into our bonus payment so we can exclude those who fail the comprehension check from receiving anything.
     real_world_currency_per_point=1.00, participation_fee=0, doc="",
     mturk_hit_settings=dict( 
-        #TODO: where do i specify completion code?
         keywords='bonus, study',
-        #TODO: change title
         title='An academic survey',
-        #TODO: work on study desc.
         description=''' 
         In this study you will be asked 12 survey questions. In each question your task is to guess the performance of past study participants.
         You will be paid a completion reward as well as a bonus payment which depends on how close your answers are to the true values.
@@ -75,7 +72,7 @@ ADMIN_USERNAME = 'admin'
 OTREE_AUTH_LEVEL = 'DEMO'
 # for security, best to set admin password in an environment variable
 #ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
-ADMIN_PASSWORD = 'Margun-2023TEST'
+ADMIN_PASSWORD = '1234MargunIsGreat###'
 
 DEMO_PAGE_INTRO_HTML = """ """
 
