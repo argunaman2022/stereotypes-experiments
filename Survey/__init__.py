@@ -19,7 +19,7 @@ class C(BaseConstants):
     Participation_fee = 0.5
     Max_bonus_payment = 2
     Bonus_multiplier = 4
-    Quota_size = 1 #quota size
+    Quota_size = 25 #quota size #TODO: change it to 500/4
     Max_time_allowed = 3600 #1 hour
     Attention_Check_1_Place = 1  # on which page should the attention 1 check appear
     Attention_Check_2_Place = 5  # on which page should the attention 2 check appear
