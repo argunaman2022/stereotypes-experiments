@@ -21,6 +21,7 @@ function myfunction(){
     let gender_choice=document.getElementById('gender').value  // value chosen by the participant on the dropdown menu
 
     if (gender_choice == 'men'){
+        //TODO: change this code this makes no sense because if i choose difference_choice=20 i get infinity, if i choose something larger i get a negative large number
         percent_choice=difference_choice/(10-difference_choice/2)}
     else if(gender_choice == 'women'){
         percent_choice=-difference_choice/(10+difference_choice/2)}
